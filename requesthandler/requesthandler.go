@@ -5,14 +5,19 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"../models"
 )
 
 // SessionStore saves cookie data securely.
-var SessionStore = sessions.NewCookieStore([]byte("123test"))
+var SessionStore = sessions.NewCookieStore([]byte("123t22est"))
 
 // A Responder is a function which can respond directly to an HTTP
 // request.
-type Responder func(http.ResponseWriter, *http.Request)
+type Responder func(*models.User, interface{}, http.ResponseWriter, *http.Request)
+
+// An IntermediateResponder is what must respond first to an HTTP
+// request. It's the normal type required for a handler.
+type IntermediateResponder func(http.ResponseWriter, *http.Request)
 
 // A RequestHandler represents a collection of responders which all
 // fit into the same category.
@@ -39,7 +44,7 @@ func (rh *GenericRequestHandler) Route(route string) Responder {
 // CreateHandler takes a RequestHandler and turns it into a function
 // which can respond to HTTP requests by returning an anonymous function
 // bound with the RequestHandler.
-func CreateHandler(rh RequestHandler) Responder {
+func CreateHandler(rh RequestHandler) IntermediateResponder {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// We'll need to break down the URL path to get the correct routing.
 		paths := strings.Split(r.URL.RequestURI()[1:], "/")
@@ -59,27 +64,38 @@ func CreateHandler(rh RequestHandler) Responder {
 			log.Printf("404: no such path `%v`", r.URL.Path)
 			http.Error(w, "No such path", http.StatusNotFound)
 		} else {
-			responder(w, r)
+			responder(nil, nil, w, r)
 		}
 	}
+}
+
+// CheckAuthentication uses the current session and request variables to check
+// if the authentication requirements are met. It returns true if met. Might raise
+// an error if something goes wrong: but it automatically reports status 500, so
+// no need to handle.
+func CheckAuthentication(w http.ResponseWriter, r *http.Request) bool {
+	// If an error occurs while loading the session, it may be because the client
+	// provided invalid information so we will just report them as an illegal login.
+	session, err := SessionStore.Get(r, "authentication")
+	if err != nil {
+		return false
+	}
+
+	authenticated, ok := session.Values["authenticated"].(bool)
+	if !ok {
+		return false
+	}
+	return authenticated
 }
 
 // CreateAuthenticatedHandler takes a RequestHandler and wraps it with
 // authentication requirements so that the endpoints cannot be accessed
 // without logging in first.
-func CreateAuthenticatedHandler(rh RequestHandler) Responder {
+func CreateAuthenticatedHandler(rh RequestHandler) IntermediateResponder {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Check if the authentication requirements are met
-		session, err := SessionStore.Get(r, "authentication")
-		if err != nil {
-			log.Printf("Could not open session store.")
-			http.Error(w, "Internal server error.", http.StatusInternalServerError)
-		}
+		authenticated := CheckAuthentication(w, r)
 
-		authenticated, ok := session.Values["authenticated"].(bool)
-		if !ok {
-			authenticated = false
-		}
+		// Check if the authentication requirements are met
 		if !authenticated {
 			log.Printf("401: not authorized to access `%v`", r.URL.Path)
 			http.Error(w, "Not authorized", http.StatusForbidden)

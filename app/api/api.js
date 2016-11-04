@@ -10,7 +10,6 @@ type User = {
 }
 
 class API {
-
   BASE_URL: string;
   BASE_DOMAIN: string;
   callbacks: { [key: string]: {[key: string]: Array<Function>}};
