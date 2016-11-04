@@ -4,7 +4,7 @@
   "description": "the backend for editing your personal portfolio page.",
   "main": "portfolio",
   "scripts": {
-    "test": "go test",
+    "test": "jest",
     "dev": "bash -c etc/dev.sh",
     "build": "bash -c etc/build.sh",
     "lint": "eslint -c ../.eslintrc.json index.js app/**"
@@ -35,7 +35,16 @@
   "devDependencies": {
     "babel-core": "^6.10.4",
     "babel-eslint": "^7.1.0",
+    "babel-jest": "^16.0.0",
     "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.9.0"
+    "babel-plugin-transform-flow-strip-types": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-react-native": "^1.9.0",
+    "jest": "^16.0.2",
+    "react-test-renderer": "^15.3.2"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
   }
 }

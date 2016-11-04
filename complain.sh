@@ -24,12 +24,15 @@ flow coverage app/main.js
 echo "Checking for linter errors..."
 eslint -c .eslint.json app/main.js
 
+echo "Running jest..."
+npm run test
+
 echo
 echo
-echo "        -------------"
-echo "        |           |"
-echo "        |   O. K.   |"
-echo "        |           |"
-echo "        -------------"
+echo "         ------------"
+echo "        |            |"
+echo "        |    PASS    |"
+echo "        |            |"
+echo "         ------------"
 echo
 echo

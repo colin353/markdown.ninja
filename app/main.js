@@ -7,7 +7,11 @@ var ReactDOM = require('react-dom');
 var Routes   = require('./routes');
 
 window._reactRoot = document.getElementById('root');
-//window.api = new APIType();
+
+var API = require('./api/api');
+
+window.api = new API();
+window.api.checkAuth();
 
 ReactDOM.render(
   Routes,
