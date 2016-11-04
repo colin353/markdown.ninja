@@ -22,10 +22,10 @@ flow check app/main.js
 flow coverage app/main.js
 
 echo "Checking for linter errors..."
-eslint -c .eslint.json app/main.js
+eslint -c app/.eslint.json app/main.js
 
 echo "Running jest..."
-npm run test
+cd app/ && npm run test
 
 echo
 echo

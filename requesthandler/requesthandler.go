@@ -1,11 +1,11 @@
 package requesthandler
 
 import (
+	"../models"
 	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
 	"strings"
-	"../models"
 )
 
 // SessionStore saves cookie data securely.

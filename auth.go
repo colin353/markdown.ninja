@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./requesthandler"
 	"./models"
+	"./requesthandler"
 	"log"
 	"net/http"
 )
@@ -12,8 +12,8 @@ import (
 func NewAuthenticationHandler() *requesthandler.GenericRequestHandler {
 	a := requesthandler.GenericRequestHandler{}
 	a.RouteMap = map[string]requesthandler.Responder{
-		"login": login,
-		"check": check,
+		"login":  login,
+		"check":  check,
 		"logout": logout,
 	}
 	return &a
