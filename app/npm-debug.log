@@ -1,0 +1,47 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/Cellar/node/6.1.0/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'dev' ]
+2 info using npm@3.8.6
+3 info using node@v6.1.0
+4 verbose run-script [ 'predev', 'dev', 'postdev' ]
+5 info lifecycle portfolio@0.1.0~predev: portfolio@0.1.0
+6 silly lifecycle portfolio@0.1.0~predev: no script for predev, continuing
+7 info lifecycle portfolio@0.1.0~dev: portfolio@0.1.0
+8 verbose lifecycle portfolio@0.1.0~dev: unsafe-perm in lifecycle true
+9 verbose lifecycle portfolio@0.1.0~dev: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/colinmerkel/Documents/Code/portfolio/app/node_modules/.bin:/usr/local/Cellar/node/6.1.0/bin:/Users/colinmerkel/Library/Android/sdk/platform-tools:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+10 verbose lifecycle portfolio@0.1.0~dev: CWD: /Users/colinmerkel/Documents/Code/portfolio/app
+11 silly lifecycle portfolio@0.1.0~dev: Args: [ '-c', 'bash -c ../etc/dev.sh' ]
+12 info lifecycle portfolio@0.1.0~dev: Failed to exec dev script
+13 verbose stack Error: portfolio@0.1.0 dev: `bash -c ../etc/dev.sh`
+13 verbose stack spawn ENOENT
+13 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:17:16)
+13 verbose stack     at emitTwo (events.js:106:13)
+13 verbose stack     at ChildProcess.emit (events.js:191:7)
+13 verbose stack     at maybeClose (internal/child_process.js:850:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
+14 verbose pkgid portfolio@0.1.0
+15 verbose cwd /Users/colinmerkel/Documents/Code/portfolio/app
+16 error Darwin 16.0.0
+17 error argv "/usr/local/Cellar/node/6.1.0/bin/node" "/usr/local/bin/npm" "run" "dev"
+18 error node v6.1.0
+19 error npm  v3.8.6
+20 error file sh
+21 error code ELIFECYCLE
+22 error errno ENOENT
+23 error syscall spawn
+24 error portfolio@0.1.0 dev: `bash -c ../etc/dev.sh`
+24 error spawn ENOENT
+25 error Failed at the portfolio@0.1.0 dev script 'bash -c ../etc/dev.sh'.
+25 error Make sure you have the latest version of node.js and npm installed.
+25 error If you do, this is most likely a problem with the portfolio package,
+25 error not with npm itself.
+25 error Tell the author that this fails on your system:
+25 error     bash -c ../etc/dev.sh
+25 error You can get information on how to open an issue for this project with:
+25 error     npm bugs portfolio
+25 error Or if that isn't available, you can get their info via:
+25 error     npm owner ls portfolio
+25 error There is likely additional logging output above.
+26 verbose exit [ 1, true ]
