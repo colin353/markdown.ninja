@@ -26,7 +26,7 @@ var connectionPool *pool.Pool
 
 // Connect to the redis database and create a connection pool, which can be used
 // to query the redis database concurrently.
-func init() {
+func Connect() {
 	var err error
 	connectionPool, err = pool.New("tcp", "localhost:6379", 10)
 	if err != nil {

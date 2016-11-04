@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+func init() {
+	Connect()
+}
+
 func TestValidation(t *testing.T) {
 	// Create a user with valid data, which should
 	// actually pass validation.

@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+func init() {
+	Connect()
+}
+
 type TestStructure struct {
 	Model
 	key      string

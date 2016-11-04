@@ -15,7 +15,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 
 var routes = (
   <Router history={ReactRouter.browserHistory}>
-    <Route path='/login' component={require('./pages/login')} />
+    <Route path='/edit/login' component={require('./pages/login')} />
     <Route path="*" component={require('./pages/404')}/>
   </Router>
 );

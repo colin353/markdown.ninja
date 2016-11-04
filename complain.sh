@@ -5,16 +5,31 @@
 
 set -e
 
-echo "TESTING..."
+echo "Testing go code..."
 go test ./models
 
-echo "VETTING..."
+echo "Vetting..."
 go vet ./models
-echo "OK"
 
-echo "LINTING..."
+echo "Linting..."
 $GOPATH/bin/golint --set_exit_status ./models
 
-echo "FORMATTING..."
+echo "Formatting..."
 gofmt -w ./
-echo "DONE"
+
+echo "Checking flow types..."
+flow check app/main.js
+flow coverage app/main.js
+
+echo "Checking for linter errors..."
+eslint -c .eslint.json app/main.js
+
+echo
+echo
+echo "        -------------"
+echo "        |           |"
+echo "        |   O. K.   |"
+echo "        |           |"
+echo "        -------------"
+echo
+echo
