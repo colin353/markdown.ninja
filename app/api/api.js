@@ -76,8 +76,8 @@ class API {
     this.emitMessage('authenticationStateChanged', this.authenticated);
   }
 
-  login(email: string, password: string) {
-    return this.request("/api/auth/login", {email, password}).then((response) => {
+  login(domain: string, password: string) {
+    return this.request("/api/auth/login", {domain, password}).then((response) => {
       if(response.result == "ok")
         return this.checkAuth(true);
       else return response;
@@ -129,6 +129,11 @@ class API {
         delete this.callbacks[message][key];
     }
   }
+
+  signup(params: {name: string, domain: string, password: string}) {
+    return this.request("/api/auth/signup", params);
+  }
+
 }
 
 module.exports = API;
