@@ -22,6 +22,17 @@ type User struct {
 	Domain       string `json:"domain"`
 }
 
+// Export converts a user into fields which are "safe" to export to
+// the web (i.e. excluding sensitive fields like password hashes).
+func (u *User) Export() map[string]interface{} {
+	return map[string]interface{}{
+		"name":         u.Name,
+		"email":        u.Email,
+		"phone_number": u.PhoneNumber,
+		"domain":       u.Domain,
+	}
+}
+
 // NewUser creates a new instance of the user object, presetting
 // any fields which need to be set initially, such as the hash salt.
 func NewUser() *User {

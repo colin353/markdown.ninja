@@ -6,7 +6,10 @@
 */
 
 type User = {
-  name: string
+  name: string,
+  phone_number: string,
+  domain: string,
+  email: string
 }
 
 class API {
@@ -136,4 +139,9 @@ class API {
 
 }
 
-module.exports = API;
+type APIInstance = API;
+export type { APIInstance };
+
+module.exports = {
+  api: API
+};

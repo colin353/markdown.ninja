@@ -15,7 +15,7 @@ var fetch = jest.fn(() => new Promise(resolve => resolve()));
 var API = require('./api');
 
 test("event subscriptions", () => {
-  var api = new API();
+  var api = new API.api();
 
   // Return a promise which will be fulfilled when the test is over.
   return new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ test("event subscriptions", () => {
 });
 
 test("event unsubscribe", () => {
-  var api = new API();
+  var api = new API.api();
 
   // Return a promise which will be fulfilled when the test is over.
   return new Promise((resolve, reject) => {

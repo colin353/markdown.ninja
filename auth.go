@@ -25,10 +25,14 @@ func NewAuthenticationHandler() *requesthandler.GenericRequestHandler {
 // upon the authentication state, but ultimately it is up to the server, not the client
 // to decide who is authenticated.
 func check(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
-	authenticated, _ := requesthandler.CheckAuthentication(w, r)
+	authenticated, user := requesthandler.CheckAuthentication(w, r)
 
 	if authenticated {
-		return requesthandler.ResponseOK
+		return map[string]interface{}{
+			"status": "ok",
+			"error":  false,
+			"user":   user.Export(),
+		}
 	}
 	http.Error(w, "Not authorized", http.StatusForbidden)
 	return requesthandler.ResponseError
@@ -108,7 +112,10 @@ func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 
 	// Check the signup conditions.
 	if len(args.Password) < 6 {
-		return requesthandler.SimpleResponse{"password-too-short", true}
+		return requesthandler.SimpleResponse{
+			Result: "password-too-short",
+			Error:  true,
+		}
 	}
 
 	me := models.NewUser()

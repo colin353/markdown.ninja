@@ -121,25 +121,38 @@ func routeRequest(rh RequestHandler, u *models.User, w http.ResponseWriter, r *h
 // if the authentication requirements are met. It returns true if met. Might raise
 // an error if something goes wrong: but it automatically reports status 500, so
 // no need to handle.
-func CheckAuthentication(w http.ResponseWriter, r *http.Request) (auth bool, domain string) {
+func CheckAuthentication(w http.ResponseWriter, r *http.Request) (bool, *models.User) {
 	// If an error occurs while loading the session, it may be because the client
 	// provided invalid information so we will just report them as an illegal login.
 	session, err := SessionStore.Get(r, "authentication")
 	if err != nil {
-		return false, ""
+		return false, nil
 	}
 
 	authenticated, ok := session.Values["authenticated"].(bool)
 	if !ok {
-		return false, ""
+		return false, nil
 	}
 
-	domain, ok = session.Values["domain"].(string)
+	domain, ok := session.Values["domain"].(string)
 	if !ok {
-		return false, ""
+		return false, nil
 	}
 
-	return authenticated, domain
+	// It's also necessary to check that the user record in the datbaase is valid.
+	user := models.User{}
+	user.Domain = domain
+	err = models.Load(&user)
+	if err != nil {
+		// The record doesn't exist: so they are not authenticatd. In addition to
+		// returning false, we'll also delete their invalid cookie.
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+
+		return false, nil
+	}
+
+	return authenticated, &user
 }
 
 // CreateAuthenticatedHandler takes a RequestHandler and wraps it with
@@ -147,7 +160,7 @@ func CheckAuthentication(w http.ResponseWriter, r *http.Request) (auth bool, dom
 // without logging in first.
 func CreateAuthenticatedHandler(rh RequestHandler) IntermediateResponder {
 	return func(w http.ResponseWriter, r *http.Request) {
-		authenticated, domain := CheckAuthentication(w, r)
+		authenticated, user := CheckAuthentication(w, r)
 
 		// Check if the authentication requirements are met
 		if !authenticated {
@@ -156,25 +169,7 @@ func CreateAuthenticatedHandler(rh RequestHandler) IntermediateResponder {
 			return
 		}
 
-		u := models.User{}
-		u.Domain = domain
-		err := models.Load(&u)
-
-		// Something unexpected: the user IS logged in, but thier
-		// record doesn't exist in the database.
-		if err != nil {
-			session, _ := SessionStore.Get(r, "authentication")
-			// The user has met the authentication requirements, so we will write
-			// their cookie.
-			session.Options.MaxAge = -1
-			session.Save(r, w)
-
-			log.Printf("401: not authorized to access `%v`", r.URL.Path)
-			http.Error(w, "Not authorized", http.StatusForbidden)
-			return
-		}
-
 		// We are authenticated, so just execute the normal handler.
-		routeRequest(rh, &u, w, r)
+		routeRequest(rh, user, w, r)
 	}
 }

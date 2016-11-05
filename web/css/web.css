@@ -1,0 +1,47 @@
+/*
+  Colors:
+  https://coolors.co/e0e0e0-c98986-7a89c2-919098-897c80
+
+  white   #E0E0E0
+  red     #C98986
+  blue    #7A89C2
+  grey    #919098
+  brown   #897C80
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono');
+
+* {
+  font-family: 'Fira Mono', monospace;
+  color: #333;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #E0E0E0;
+}
+
+html {
+  padding: 0;
+  margin: 0;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+
+.button {
+  cursor: default;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
