@@ -8,6 +8,10 @@
 
 var React = require('react');
 
+type Props = {
+  onChange: (markdown: string) => void
+}
+
 class Editor extends React.Component {
   editor: React.Component;
   ace: any;
@@ -15,11 +19,25 @@ class Editor extends React.Component {
     this.ace = window.ace.edit("editor");
     this.ace.setTheme("ace/theme/twilight");
     this.ace.session.setMode("ace/mode/markdown");
+    this.ace.session.setUseWrapMode(true);
+    
+    // Register for onChange events.
+    this.ace.on("change", this.textTyped.bind(this));
+  }
+  componentWillUnmount() {
+    this.ace.destroy();
+    this.ace.container.remove();
+  }
+  textTyped() {
+    this.props.onChange(this.ace.getValue());
   }
   render() {
     return (
       <div style={styles.container}>
-        <pre style={styles.editor} id="editor" ref={(e) => this.editor = e}>This is an editor.</pre>
+        <pre style={styles.editor}
+          id="editor"
+          ref={(e) => this.editor = e}
+        ></pre>
       </div>
     );
   }
@@ -30,10 +48,11 @@ const styles = {
     flex: 1
   },
   editor: {
+    fontSize: 16,
     width: '100%',
     height: '100%',
     position:'relative',
-    top:-12
+    top:-16
   }
 };
 

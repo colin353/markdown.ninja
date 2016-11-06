@@ -15,7 +15,8 @@ declare class Window {
   location: any,
   _reactRoot: any,
   md5(target: string): string,
-  ace: any
+  ace: any,
+  showdown: any
 };
 
 declare var window: Window;

@@ -48,6 +48,7 @@ class Tree extends React.Component {
 
 const styles = {
   container: {
+    fontSize: 16,
     color: '#c4c4c4',
     backgroundColor: '#716669',
     width: 300,

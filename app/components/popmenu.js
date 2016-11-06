@@ -41,6 +41,10 @@ class PopMenu extends React.Component {
     api.logout();
   }
 
+  clickEditSite() {
+    this.context.router.push('/edit/site');
+  }
+
   render() {
     return (
       <div style={styles.container}>
@@ -50,13 +54,17 @@ class PopMenu extends React.Component {
           <span>{"." + api.BASE_DOMAIN}</span>
         </div>
         <div style={styles.buttonlist}>
-          <Button color='red' action="edit my site" />
+          <Button color='red' onClick={this.clickEditSite.bind(this)} action="edit my site" />
           <div style={{display: 'flex', flex: 1}}></div>
           <Button onClick={this.logout.bind(this)} action="log out" />
         </div>
       </div>
     );
   }
+}
+
+PopMenu.contextTypes = {
+  router: React.PropTypes.object
 }
 
 const styles = {
