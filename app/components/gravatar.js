@@ -9,7 +9,8 @@
 var React = require('react');
 
 type Props = {
-  email: string
+  email: string,
+  onClick: Function
 }
 
 class Gravatar extends React.Component {
@@ -18,16 +19,17 @@ class Gravatar extends React.Component {
 
   render() {
     var hash = window.md5(this.props.email);
-    console.log("drawing: ", this.props.email);
+
     return (
-      <div style={styles.container}>
+      <div onClick={this.props.onClick} style={styles.container}>
         <img style={styles.image} src={"https://www.gravatar.com/avatar/"+hash+"?d=mm&s=80"} />
       </div>
     );
   }
 }
 Gravatar.propTypes = {
-  email: React.PropTypes.string
+  email: React.PropTypes.string,
+  onClick: () => {}
 }
 
 const styles = {
