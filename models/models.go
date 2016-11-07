@@ -162,8 +162,8 @@ func Insert(m Model) error {
 // ModelList is an implementation of a ModelIterator.
 type ModelList struct {
 	Prototype Model
-	Keys []string
-	Index int
+	Keys      []string
+	Index     int
 }
 
 // Next loads the next value in the iterator, and returns
@@ -271,7 +271,7 @@ func Load(m Model) error {
 	return LoadFromKey(m, m.Key())
 }
 
-// LoadFromModel takes a model (which must have a working Key() function)
+// LoadFromKey takes a model and a key string,
 // and searches in the redis database for that object, then fills out
 // the object fields with whatever is in the database. For any fields
 // which don't exist in the database, it uses m.MakeDefault() to set

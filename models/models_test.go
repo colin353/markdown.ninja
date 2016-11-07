@@ -1,8 +1,8 @@
 package models
 
 import (
-	"testing"
 	"log"
+	"testing"
 )
 
 func init() {
