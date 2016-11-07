@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./models"
-	"./requesthandler"
+	"github.com/colin353/portfolio/models"
+	"github.com/colin353/portfolio/requesthandler"
 	"log"
 	"net/http"
 )

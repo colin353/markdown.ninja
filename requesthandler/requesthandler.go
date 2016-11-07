@@ -1,7 +1,7 @@
 package requesthandler
 
 import (
-	"../models"
+	"github.com/colin353/portfolio/models"
 	"encoding/json"
 	"github.com/gorilla/sessions"
 	"io/ioutil"
