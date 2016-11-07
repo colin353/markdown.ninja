@@ -3,10 +3,11 @@ package models
 import (
 	"errors"
 	"fmt"
-	"github.com/mediocregopher/radix.v2/pool"
 	"log"
 	"reflect"
 	"strconv"
+
+	"github.com/mediocregopher/radix.v2/pool"
 )
 
 // Model is the basic interface required for an object to be
@@ -21,6 +22,7 @@ type Model interface {
 	MakeDefault()
 	Validate() bool
 	RegistrationKey() string
+	Export() map[string]interface{}
 }
 
 // A ModelIterator is an iterator over a list of models.

@@ -1,13 +1,14 @@
 package requesthandler
 
 import (
-	"github.com/colin353/portfolio/models"
 	"encoding/json"
-	"github.com/gorilla/sessions"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/colin353/portfolio/models"
+	"github.com/gorilla/sessions"
 )
 
 // A SimpleResponse is just an acknowledgement response
@@ -99,7 +100,7 @@ func routeRequest(rh RequestHandler, u *models.User, w http.ResponseWriter, r *h
 		log.Printf("404: no such path `%v`", r.URL.Path)
 		http.Error(w, "No such path", http.StatusNotFound)
 	} else {
-		response := responder(nil, w, r)
+		response := responder(u, w, r)
 
 		// The response should be an object that can be converted to JSON.
 		// If it is nil, we will assume that the result is OK.
@@ -163,7 +164,7 @@ func CreateAuthenticatedHandler(rh RequestHandler) IntermediateResponder {
 		authenticated, user := CheckAuthentication(w, r)
 
 		// Check if the authentication requirements are met
-		if !authenticated {
+		if !authenticated || user == nil {
 			log.Printf("401: not authorized to access `%v`", r.URL.Path)
 			http.Error(w, "Not authorized", http.StatusForbidden)
 			return

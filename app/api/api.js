@@ -137,6 +137,18 @@ class API {
     return this.request("/api/auth/signup", params);
   }
 
+  pages() {
+    return this.request("/api/edit/pages");
+  }
+
+  createPage(params: {name: string, markdown: string, html: string}) {
+    return this.request("/api/edit/create_page", params);
+  }
+
+  editPage(params: {name: string, markdown: string, html: string}) {
+    return this.request("/api/edit/edit_page", params);
+  }
+
 }
 
 type APIInstance = API;

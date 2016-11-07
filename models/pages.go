@@ -33,6 +33,15 @@ func (p *Page) MakeDefault() {
 	}
 }
 
+// Export returns the fields which are acceptable to send directly to the
+// client over the web.
+func (p *Page) Export() map[string]interface{} {
+	return map[string]interface{}{
+		"name":     p.Name,
+		"markdown": p.Markdown,
+	}
+}
+
 // RegistrationKey defines the set to which this page will
 // belong. It'll be of the form:
 //    pages:[domain]

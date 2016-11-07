@@ -23,6 +23,10 @@ func (s *TestStructure) MakeDefault() {
 	s.Age = 34
 }
 
+func (s *TestStructure) Export() map[string]interface{} {
+	return nil
+}
+
 func (s *TestStructure) RegistrationKey() string {
 	return "tests"
 }
