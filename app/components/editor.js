@@ -20,7 +20,7 @@ class Editor extends React.Component {
     this.ace.setTheme("ace/theme/twilight");
     this.ace.session.setMode("ace/mode/markdown");
     this.ace.session.setUseWrapMode(true);
-    
+
     // Register for onChange events.
     this.ace.on("change", this.textTyped.bind(this));
   }

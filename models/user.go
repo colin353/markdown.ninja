@@ -85,6 +85,12 @@ func (u *User) Key() string {
 	return fmt.Sprintf("user:%s", u.Domain)
 }
 
+// RegistrationKey returns a key which is used to store a set of all sibling
+// elements. In this case, all users are siblings to each other.
+func (u *User) RegistrationKey() string {
+	return "users"
+}
+
 var domainValidator = regexp.MustCompile("^[A-Za-z0-9]+$")
 var emailValidator = regexp.MustCompile(`^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$`)
 

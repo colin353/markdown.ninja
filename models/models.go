@@ -20,6 +20,14 @@ type Model interface {
 	Key() string
 	MakeDefault()
 	Validate() bool
+	RegistrationKey() string
+}
+
+// A ModelIterator is an iterator over a list of models.
+type ModelIterator interface {
+	Next() bool
+	Value() Model
+	Count() int
 }
 
 var connectionPool *pool.Pool
@@ -80,7 +88,14 @@ func Delete(m Model) error {
 		return err
 	}
 
+	// Delete the hash.
 	result := p.Cmd("DEL", m.Key())
+	if result.Err != nil {
+		return result.Err
+	}
+
+	// Also, delete the member from the set.
+	result = p.Cmd("SREM", m.RegistrationKey(), m.Key())
 	return result.Err
 }
 
@@ -133,7 +148,70 @@ func Save(m Model) error {
 // Insert creates a new instance of a model in the database. It'll
 // return an error if the key already exists.
 func Insert(m Model) error {
+	// First, register the RegistrationKey into the registration set.
+	p, err := connectionPool.Get()
+	if err != nil {
+		log.Fatal("Couldn't connect to the redis database.")
+		return err
+	}
+	p.Cmd("SADD", m.RegistrationKey(), m.Key())
+
 	return saveOrInsert(m, false)
+}
+
+// ModelList is an implementation of a ModelIterator.
+type ModelList struct {
+	Prototype Model
+	Keys []string
+	Index int
+}
+
+// Next loads the next value in the iterator, and returns
+// true if it succeeded. To get the value, do m.Value().
+func (m *ModelList) Next() bool {
+	if m.Index >= len(m.Keys) {
+		return false
+	}
+	err := LoadFromKey(m.Prototype, m.Keys[m.Index])
+	m.Index++
+
+	// If there is an error loading a key, skip ahead.
+	if err != nil {
+		return m.Next()
+	}
+	return true
+}
+
+// Value returns the currently-pointed-to value for the
+// iterator.
+func (m *ModelList) Value() Model {
+	return m.Prototype
+}
+
+// Count returns the total number of objects available
+// in the iterator.
+func (m *ModelList) Count() int {
+	return len(m.Keys)
+}
+
+// GetList takes an object and returns a list of sibilings of it.
+// Actually it returns a ModelIterator, which you can call "Next()" on
+// any number of times.
+func GetList(m Model) (ModelIterator, error) {
+	p, err := connectionPool.Get()
+	if err != nil {
+		log.Fatal("Couldn't connect to the redis database.")
+		return nil, err
+	}
+
+	result := p.Cmd("SMEMBERS", m.RegistrationKey())
+
+	keys, err := result.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return &ModelList{Prototype: m, Keys: keys}, result.Err
 }
 
 func saveOrInsert(m Model, expectKey bool) error {
@@ -187,12 +265,18 @@ func saveOrInsert(m Model, expectKey bool) error {
 	return nil
 }
 
-// Load takes a model (which must have a working Key() function)
+// Load takes a partially filled out Model struct, searches for it in the
+// database, and fills in the rest of the fields.
+func Load(m Model) error {
+	return LoadFromKey(m, m.Key())
+}
+
+// LoadFromModel takes a model (which must have a working Key() function)
 // and searches in the redis database for that object, then fills out
 // the object fields with whatever is in the database. For any fields
 // which don't exist in the database, it uses m.MakeDefault() to set
 // fields to their default values.
-func Load(m Model) error {
+func LoadFromKey(m Model, key string) error {
 	m.MakeDefault()
 
 	p, err := connectionPool.Get()
@@ -200,7 +284,7 @@ func Load(m Model) error {
 		log.Print("Couldn't connect to the redis database.")
 		return err
 	}
-	response := p.Cmd("HGETALL", m.Key())
+	response := p.Cmd("HGETALL", key)
 	if err != nil {
 		log.Print("Error executing redis load command (HGETALL).")
 		return err
@@ -208,12 +292,12 @@ func Load(m Model) error {
 
 	instanceMap, err := response.Map()
 	if err != nil {
-		log.Printf("Unable to unwind key '%s' in redis as a map (!)", m.Key())
+		log.Printf("Unable to unwind key '%s' in redis as a map (!)", key)
 		return err
 	}
 	// Check if there are no keys in the map: that means it doesn't exist.
 	if len(instanceMap) == 0 {
-		return errors.New("There is no such key.")
+		return fmt.Errorf("There is no such key: `%v`.", key)
 	}
 
 	instanceValue := reflect.ValueOf(m).Elem()
@@ -226,7 +310,7 @@ func Load(m Model) error {
 
 		// Only fields with JSON names will be loaded. Also, we use
 		// the key field in the lookup, so it doesn't need to be loaded.
-		if fieldName == "" || fieldName == "key" {
+		if fieldName == "" {
 			continue
 		}
 

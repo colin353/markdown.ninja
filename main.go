@@ -17,6 +17,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// Set up routing.
 	http.HandleFunc("/api/auth/", requesthandler.CreateHandler(NewAuthenticationHandler()))
+	http.HandleFunc("/api/edit/", requesthandler.CreateAuthenticatedHandler(NewEditHandler()))
 	http.HandleFunc("/edit/", indexHandler)
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 
