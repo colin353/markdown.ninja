@@ -9,20 +9,30 @@
 var React = require('react');
 
 type Props = {
-  onChange: (markdown: string) => void
+  onChange: (markdown: string) => void,
+  visible: boolean,
+  initialText: string
 }
 
 class Editor extends React.Component {
   editor: React.Component;
   ace: any;
+
   componentDidMount() {
     this.ace = window.ace.edit("editor");
-    this.ace.setTheme("ace/theme/twilight");
+    this.ace.setTheme("ace/theme/custom");
     this.ace.session.setMode("ace/mode/markdown");
     this.ace.session.setUseWrapMode(true);
 
+    // Not sure what this does, but I was asked to do it by the
+    // console window.
+    this.ace.$blockScrolling = Infinity;
+
     // Register for onChange events.
     this.ace.on("change", this.textTyped.bind(this));
+
+    // Try to put the initial text on there.
+    if(this.props.initialText) this.ace.session.setValue(this.props.initialText, -1);
   }
   componentWillUnmount() {
     this.ace.destroy();
@@ -31,9 +41,16 @@ class Editor extends React.Component {
   textTyped() {
     this.props.onChange(this.ace.getValue());
   }
+  componentWillReceiveProps(nextProps: Props) {
+    if(nextProps.initialText != this.props.initialText) {
+      this.ace.setValue(nextProps.initialText, -1);
+    }
+  }
   render() {
+    var containerstyle = Object.assign({}, styles.container);
+    if(!this.props.visible) containerstyle.display = 'none';
     return (
-      <div style={styles.container}>
+      <div style={containerstyle}>
         <pre style={styles.editor}
           id="editor"
           ref={(e) => this.editor = e}

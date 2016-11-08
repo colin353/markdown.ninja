@@ -71,3 +71,29 @@ func (p *Page) Validate() bool {
 
 	return true
 }
+
+// GenerateName creates a unique name
+// for the page. This function finds a unique key (or returns err if it can't
+// do that in a reasonable time) and attaches it to the page.
+func (p *Page) GenerateName() error {
+	pool, err := connectionPool.Get()
+	if err != nil {
+		log.Fatal("Couldn't connect to the redis database.")
+	}
+	for i := 0; i < 10; i++ {
+		if i == 0 {
+			p.Name = "untitled.md"
+		} else {
+			p.Name = fmt.Sprintf("untitled_%d.md", i)
+		}
+		result := pool.Cmd("EXISTS", p.Key())
+		exists, err := result.Int()
+		if err != nil {
+			return err
+		}
+		if exists == 0 {
+			return nil
+		}
+	}
+	return fmt.Errorf("Couldn't generate a new key after significant effort (tried %s)", p.Name)
+}

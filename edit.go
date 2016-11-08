@@ -23,7 +23,6 @@ func NewEditHandler() *requesthandler.GenericRequestHandler {
 // Create a new page. If that page already exists, will return an error.
 func createPage(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
 	type createArgs struct {
-		Name     string `json:"name"`
 		Markdown string `json:"markdown"`
 		HTML     string `json:"html"`
 	}
@@ -36,18 +35,23 @@ func createPage(u *models.User, w http.ResponseWriter, r *http.Request) interfac
 
 	// Create a new instance of the page object.
 	p := models.Page{
-		Name:     args.Name,
 		Markdown: args.Markdown,
 		HTML:     args.HTML,
 		Domain:   u.Domain,
 	}
+	err = p.GenerateName()
+	if err != nil {
+		log.Printf("Tried to create a new page, but couldn't make a unique name. (tried %s)", p.Key())
+		http.Error(w, "", http.StatusBadRequest)
+	}
+
 	err = models.Insert(&p)
 	if err != nil {
 		log.Printf("Tried to create a new page called `%s`, but encountered an error.", p.Key())
 		http.Error(w, "", http.StatusBadRequest)
 	}
 
-	return requesthandler.ResponseOK
+	return p.Export()
 }
 
 func editPage(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {

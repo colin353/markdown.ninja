@@ -16,7 +16,8 @@ declare class Window {
   _reactRoot: any,
   md5(target: string): string,
   ace: any,
-  showdown: any
+  showdown: any,
+  addEventListener: Function
 };
 
 declare var window: Window;

@@ -24,7 +24,8 @@ class API {
     this.callbacks = {
       authenticationStateChanged: {},
       escapeKeyPressed: {},
-      clickBody: {}
+      clickBody: {},
+      "ctrl+s": {}
     };
 
     // The base URL is stored here so that UI components can
@@ -54,6 +55,15 @@ class API {
       window._reactRoot.addEventListener('click', (event) => {
         this.emitMessage('clickBody', event);
       });
+
+    // Detect CTRL+S, block propagation, and send a message out about it.
+    window.addEventListener("keydown", (e) => {
+      if((e.ctrlKey || e.metaKey) && (e.which == '115' || e.which == '83')) {
+        event.preventDefault();
+        this.emitMessage("ctrl+s", e);
+      }
+      return false;
+    });
   }
 
   // The basic function to talk to the API. It encodes the parameters as JSON
@@ -137,15 +147,15 @@ class API {
     return this.request("/api/auth/signup", params);
   }
 
-  pages() {
+  pages() : Promise<Page[]> {
     return this.request("/api/edit/pages");
   }
 
-  createPage(params: {name: string, markdown: string, html: string}) {
+  createPage(params: Page) {
     return this.request("/api/edit/create_page", params);
   }
 
-  editPage(params: {name: string, markdown: string, html: string}) {
+  editPage(params: Page) {
     return this.request("/api/edit/edit_page", params);
   }
 

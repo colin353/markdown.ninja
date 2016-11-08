@@ -23,7 +23,8 @@ const styles = {
   container: {
     flex: 1,
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    overflow: 'auto'
   }
 }
 
