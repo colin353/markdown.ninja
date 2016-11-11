@@ -5,6 +5,7 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono');
 
 .container {
+  padding-top: 20px;
   font-family: 'Fira Mono', monospace;
   color: #333;
   background-color: #E0E0E0;

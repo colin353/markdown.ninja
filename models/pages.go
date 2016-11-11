@@ -97,3 +97,37 @@ func (p *Page) GenerateName() error {
 	}
 	return fmt.Errorf("Couldn't generate a new key after significant effort (tried %s)", p.Name)
 }
+
+// RenamePage takes an existing page and rename it. It's a bit tricky to rename the
+// page, because the page create sthe key, which prevents lookups.
+func (p *Page) RenamePage(newName string) error {
+	pool, err := connectionPool.Get()
+	if err != nil {
+		log.Fatal("Couldn't connect to the redis database.")
+		return err
+	}
+
+	oldKey := p.Key()
+	p.Name = newName
+
+	// Need to check key validation, in case the new name is not valid.
+	if !p.Validate() {
+		return fmt.Errorf("Tried to rename to invalid name `%s`", newName)
+	}
+
+	// Step one: rename the old key to the new key.
+	pool.Cmd("RENAME", oldKey, p.Key())
+
+	// Take the registration pool and delete the old key
+	// and add a new key.
+	pool.Cmd("SREM", p.RegistrationKey(), oldKey)
+	pool.Cmd("SADD", p.RegistrationKey(), p.Key())
+
+	// Save the object with the new parameters.
+	err = Save(p)
+	if err != nil {
+		log.Printf("Tried to rename page to `%v`, but couldn't save at the end.", newName)
+	}
+
+	return nil
+}

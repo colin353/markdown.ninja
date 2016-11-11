@@ -6,6 +6,7 @@
 */
 
 var React = require('react');
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 import type { APIInstance } from '../api/api';
 declare var api: APIInstance;
@@ -15,7 +16,9 @@ var Button = require('./button');
 
 type Props = {
   pages: Page[],
-  clickPage: (p: Page) => void
+  clickPage: (p: Page) => void,
+  onAddNewPage?: () => void,
+  onUploadFile?: () => void
 }
 
 class Tree extends React.Component {
@@ -37,21 +40,38 @@ class Tree extends React.Component {
   componentWillUnmount() {
     api.removeListeners("tree");
   }
+  handleClick() {
+
+  }
+  collect(page: Page) {
+    return {page: page}
+  }
   render() {
     return (
       <div style={styles.container}>
         <div style={styles.rootRow}><Icon name="book" /> {this.state.domain}.{api.BASE_DOMAIN}</div>
         {this.props.pages.map((p) => {
           return (
-            <div onClick={this.props.clickPage.bind(this, p)} key={p.name} className="noselect" style={styles.row}><Icon name="description" /> {p.name}</div>
+            <ContextMenuTrigger collect={this.collect.bind(this, p)} key={p.name} id="page">
+              <div onClick={this.props.clickPage.bind(this, p)} className="noselect" style={styles.row}><Icon name="description" /> {p.name}</div>
+            </ContextMenuTrigger>
+          )
+        })}
+
+        <div style={styles.row}><Icon name="folder" /> files</div>
+        {this.props.pages.map((p) => {
+          return (
+            <ContextMenuTrigger data={this.collect.bind(this, p)} key={"file"+p.name} id="file">
+              <div onClick={this.props.clickPage.bind(this, p)} className="noselect" style={styles.indentRow}><Icon name="description" /> {p.name}</div>
+            </ContextMenuTrigger>
           )
         })}
 
       <div style={{flex: 1}}></div>
       <div style={styles.controlPanel}>
-        <Button action="+ new page" />
+        <Button onClick={this.props.onAddNewPage} action="+ new page" />
         <div style={{marginLeft: 10}}></div>
-        <Button action="upload file" />
+        <Button onClick={this.props.onUploadFile} action="upload file" />
       </div>
       </div>
     );
@@ -73,6 +93,9 @@ const styles = {
   },
   row: {
     paddingLeft: 40
+  },
+  indentRow: {
+    paddingLeft: 60
   },
   controlPanel: {
     display: 'flex',

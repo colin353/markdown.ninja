@@ -13,9 +13,12 @@ import (
 func NewEditHandler() *requesthandler.GenericRequestHandler {
 	a := requesthandler.GenericRequestHandler{}
 	a.RouteMap = map[string]requesthandler.Responder{
+		"page":        page,
 		"pages":       pages,
 		"create_page": createPage,
 		"edit_page":   editPage,
+		"rename_page": renamePage,
+		"delete_page": deletePage,
 	}
 	return &a
 }
@@ -89,6 +92,68 @@ func editPage(u *models.User, w http.ResponseWriter, r *http.Request) interface{
 	return requesthandler.ResponseOK
 }
 
+// Rename an existing page to a new name.
+func renamePage(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type renameArgs struct {
+		OldName string `json:"old_name"`
+		NewName string `json:"new_name"`
+	}
+	args := renameArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Get the old version of the page.
+	p := models.Page{}
+	p.Domain = u.Domain
+	p.Name = args.OldName
+	err = models.Load(&p)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Rename that page.
+	err = p.RenamePage(args.NewName)
+
+	// The most common reason this fails is because of validation
+	// failure because an invalid name was provided.
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	return requesthandler.ResponseOK
+}
+
+// This function searches for a specific page, and returns it.
+func page(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type pageArgs struct {
+		Name string `json:"name"`
+	}
+	args := pageArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Create a page object to search with.
+	p := models.Page{}
+	p.Domain = u.Domain
+	p.Name = args.Name
+	err = models.Load(&p)
+	if err != nil {
+		http.Error(w, "", http.StatusNotFound)
+		return requesthandler.ResponseError
+	}
+
+	// Return the page.
+	return p.Export()
+}
+
 // Return a list of pages belonging to that user.
 func pages(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
 	// Create a page object and use it to search for its own siblings.
@@ -106,4 +171,38 @@ func pages(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
 	}
 
 	return pageList
+}
+
+// Delete a page.
+func deletePage(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type deleteArgs struct {
+		Name string `json:"name"`
+	}
+	args := deleteArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// First, try to load the page.
+	p := models.Page{}
+	p.Domain = u.Domain
+	p.Name = args.Name
+	err = models.Load(&p)
+	if err != nil {
+		log.Printf("Tried to delete existing page `%s`", p.Key())
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Now, delete the page.
+	err = models.Delete(&p)
+	if err != nil {
+		log.Printf("Failed to delete page `%s`", p.Key())
+		http.Error(w, "", http.StatusInternalServerError)
+		return requesthandler.ResponseError
+	}
+
+	return requesthandler.ResponseOK
 }

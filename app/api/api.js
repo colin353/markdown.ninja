@@ -147,16 +147,28 @@ class API {
     return this.request("/api/auth/signup", params);
   }
 
+  getPage(name: string) : Promise<Page> {
+    return this.request("/api/edit/page", {name: name})
+  }
+
   pages() : Promise<Page[]> {
     return this.request("/api/edit/pages");
   }
 
-  createPage(params: Page) {
+  createPage(params: { html: string, markdown: string }) {
     return this.request("/api/edit/create_page", params);
   }
 
   editPage(params: Page) {
     return this.request("/api/edit/edit_page", params);
+  }
+
+  renamePage(oldName: string, newName: string) {
+    return this.request("/api/edit/rename_page", {old_name: oldName, new_name: newName});
+  }
+
+  deletePage(page: Page) {
+    return this.request("/api/edit/delete_page", page);
   }
 
 }

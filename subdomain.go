@@ -18,7 +18,14 @@ import (
 func renderSubdomain(domain string, w http.ResponseWriter, r *http.Request) {
 	p := models.Page{}
 	p.Domain = domain
-	p.Name = "index.md"
+	log.Printf("Request URI: %s", r.RequestURI)
+
+	if r.RequestURI == "/" || r.RequestURI == "/index.md" {
+		p.Name = "index.md"
+	} else {
+		p.Name = r.RequestURI[1:]
+	}
+
 	err := models.Load(&p)
 	if err != nil {
 		log.Printf("Didn't find anything at key: `%v`", p.Key())
