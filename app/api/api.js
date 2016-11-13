@@ -155,7 +155,7 @@ class API {
     return this.request("/api/edit/pages");
   }
 
-  createPage(params: { html: string, markdown: string }) {
+  createPage(params: { html: string, markdown: string }): Promise<Page> {
     return this.request("/api/edit/create_page", params);
   }
 
@@ -169,6 +169,49 @@ class API {
 
   deletePage(page: Page) {
     return this.request("/api/edit/delete_page", page);
+  }
+
+  files(): Promise<File[]> {
+    return this.request("/api/files/files");
+  }
+
+  getFile(name: string): Promise<File> {
+    return this.request("/api/files/file", {name});
+  }
+
+  uploadFile(name: string, file: any, onProgress: (progress: number, e: Event) => void) {
+    var data = new FormData();
+    data.append('file', file);
+    data.append('name', name);
+
+    var resolveResponse, rejectResponse;
+    var responsePromise = new Promise((resolve, reject) => {
+      resolveResponse = resolve;
+      rejectResponse = reject;
+    })
+
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = () => {
+      if(request.readyState == 4 && request.status == 0)
+        rejectResponse(resp);
+      else if(request.readyState == 4) {
+        var resp = JSON.parse(request.response);
+        resolveResponse(resp);
+      }
+    }
+
+    request.upload.addEventListener('progress', (e: Event) => {
+      onProgress(100.0*e.loaded/e.total, e);
+    }, false);
+
+    request.open('POST', this.BASE_URL + "/api/files/upload");
+    request.send(data);
+
+    return responsePromise;
+  }
+
+  deleteFile(name: string) {
+    return this.request("/api/files/delete", {name: name})
   }
 
 }

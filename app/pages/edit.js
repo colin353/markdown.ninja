@@ -17,12 +17,14 @@ var Editor = require('../components/editor');
 var Preview = require('../components/preview');
 var Tab = require('../components/tab');
 var Popover = require('../components/popover');
+var ConvertAbsToRelativeURL = require('../tools/relative-to-absolute');
 
 class Edit extends React.Component {
   state: {
     markdown: string,
     html: string,
     pages: Array<Page>,
+    files: Array<File>,
     showEditor: boolean,
     showPreview: boolean,
     unsavedChanges: boolean,
@@ -30,9 +32,13 @@ class Edit extends React.Component {
     showRenamePopover: boolean,
     renameValue: string,
     contextPage: Page,
-    showDeletePopover: boolean
+    contextFile: File,
+    showDeletePagePopover: boolean,
+    showDeleteFilePopover: boolean,
+    showUploadPopover: boolean
   };
   renameInput: any;
+  fileInput: any;
   converter: any;
 
   constructor(props: any) {
@@ -42,6 +48,7 @@ class Edit extends React.Component {
       html: "",
       markdown: "",
       pages: [],
+      files: [],
       showEditor: true,
       showPreview: true,
       selectedPage: {
@@ -52,8 +59,11 @@ class Edit extends React.Component {
       unsavedChanges: false,
       showRenamePopover: false,
       contextPage: {"name": "index.md", "markdown": "", "html": ""},
+      contextFile: {"name": ""},
       renameValue: "index.md",
-      showDeletePopover: false
+      showDeletePagePopover: false,
+      showDeleteFilePopover: false,
+      showUploadPopover: false
     }
 
     this.converter = new window.showdown.Converter();
@@ -67,8 +77,21 @@ class Edit extends React.Component {
       });
     });
 
+    this.getFiles().then((files) => {
+      this.setState({files});
+    })
+
     api.addListener("ctrl+s", "editor", () => {
       this.save();
+    });
+  }
+
+  getFiles() {
+    return api.files().then((files) => {
+      // Sort the list alphabetically.
+      return files.sort((a, b) => {
+        return b.name.localeCompare(a.name);
+      })
     });
   }
 
@@ -96,6 +119,10 @@ class Edit extends React.Component {
 
   textEdited(markdown: string) {
     var html = this.converter.makeHtml(markdown);
+    // We also need to replace relative URLs with absolute URLs, so that
+    // the preview window works correctly.
+    html = ConvertAbsToRelativeURL(html);
+
     this.setState({
       markdown,
       html,
@@ -130,17 +157,27 @@ class Edit extends React.Component {
       });
     })
   }
-  handleClick(button: string, e: any, data: { page: Page }) {
-    if(button == "rename") {
+  handleClick(button: string, e: any, data: { page?: Page, file?: File }) {
+    if(button == "rename" && data.page) {
       this.setState({
         showRenamePopover: true,
         contextPage: data.page,
         renameValue: data.page.name
       });
-    }
-    else if(button == "delete") {
+    } else if(button == "rename" && data.file) {
       this.setState({
-        showDeletePopover: true,
+        showRenamePopover: true,
+        contextFile: data.file,
+        renameValue: data.file.name
+      })
+    } else if(button == "delete" && data.file) {
+      this.setState({
+        showDeleteFilePopover: true,
+        contextFile: data.file
+      });
+    } else if(button == "delete" && data.page) {
+      this.setState({
+        showDeletePagePopover: true,
         contextPage: data.page
       });
     }
@@ -190,6 +227,14 @@ class Edit extends React.Component {
     });
   }
 
+  deleteFile(file: File) {
+    api.deleteFile(file.name).then(() => {
+      return this.getFiles();
+    }).then((files) => {
+      this.setState({files, showDeleteFilePopover: false});
+    })
+  }
+
   addNewPage() {
     var page: Page;
     api.createPage({markdown: "", html: ""}).then((p) => {
@@ -201,7 +246,15 @@ class Edit extends React.Component {
   }
 
   uploadFile() {
+    api.uploadFile("file.txt", this.fileInput.files[0], () => {}).then(() => {
+      return this.getFiles();
+    }).then((files) => {
+      this.setState({files, showUploadPopover: false});
+    });
+  }
 
+  clickUploadFile() {
+    this.setState({showUploadPopover: true});
   }
 
   render() {
@@ -209,9 +262,10 @@ class Edit extends React.Component {
       <div style={styles.container}>
         <Tree
           onAddNewPage={this.addNewPage.bind(this)}
-          onUploadFile={this.uploadFile.bind(this)}
+          onUploadFile={this.clickUploadFile.bind(this)}
           clickPage={this.clickPage.bind(this)}
           pages={this.state.pages}
+          files={this.state.files}
         />
         <div style={styles.editWindow}>
           <div style={styles.tabs}>
@@ -258,15 +312,26 @@ class Edit extends React.Component {
         </Popover>
 
         <Popover
-          visible={this.state.showDeletePopover}
-          onDismiss={() => this.setState({showDeletePopover: false})}
+          visible={this.state.showDeletePagePopover||this.state.showDeleteFilePopover}
+          onDismiss={() => this.setState({showDeleteFilePopover: false, showDeletePagePopover: false})}
         >
-          <p>So you want to delete <b>{this.state.contextPage.name}</b>?</p>
+          <p>So you want to delete <b>{this.state.showDeletePagePopover?this.state.contextPage.name:this.state.contextFile.name}</b>?</p>
 
           <div style={{display: 'flex'}}>
-            <Button action="yes" color="red" onClick={this.deletePage.bind(this,this.state.contextPage)} />
+            <Button action="yes" color="red" onClick={this.state.showDeletePagePopover?this.deletePage.bind(this,this.state.contextPage):this.deleteFile.bind(this, this.state.contextFile)} />
             <div style={{marginLeft: 20}}></div>
-            <Button action="no" onClick={() => this.setState({showDeletePopover: false})} />
+            <Button action="no" onClick={() => this.setState({showDeletePagePopover: false, showDeleteFilePopover: false})} />
+          </div>
+        </Popover>
+
+        <Popover
+          visible={this.state.showUploadPopover}
+          onDismiss={() => this.setState({showUploadPopover: false})}
+        >
+          <p>Upload a file?</p>
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <input ref={(r) => this.fileInput = r} style={{flex: 1}} type="file" />
+            <Button onClick={this.uploadFile.bind(this)} color="red" action="upload" />
           </div>
         </Popover>
       </div>

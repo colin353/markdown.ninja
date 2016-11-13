@@ -4,3 +4,4 @@ node_modules
 app/node_modules
 *debug.log
 web/js/app.js
+data/*

@@ -16,6 +16,7 @@ var Button = require('./button');
 
 type Props = {
   pages: Page[],
+  files: File[],
   clickPage: (p: Page) => void,
   onAddNewPage?: () => void,
   onUploadFile?: () => void
@@ -44,7 +45,10 @@ class Tree extends React.Component {
 
   }
   collect(page: Page) {
-    return {page: page}
+    return {page: page};
+  }
+  collectFile(file: File) {
+    return {file: file};
   }
   render() {
     return (
@@ -59,10 +63,10 @@ class Tree extends React.Component {
         })}
 
         <div style={styles.row}><Icon name="folder" /> files</div>
-        {this.props.pages.map((p) => {
+        {this.props.files.map((f) => {
           return (
-            <ContextMenuTrigger data={this.collect.bind(this, p)} key={"file"+p.name} id="file">
-              <div onClick={this.props.clickPage.bind(this, p)} className="noselect" style={styles.indentRow}><Icon name="description" /> {p.name}</div>
+            <ContextMenuTrigger collect={this.collectFile.bind(this, f)} key={"page"+f.name} id="page">
+              <div onClick={this.props.clickPage.bind(this, f)} className="noselect" style={styles.indentRow}><Icon name="description" /> {f.name}</div>
             </ContextMenuTrigger>
           )
         })}

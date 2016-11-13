@@ -10,3 +10,7 @@ declare type Page = {
   markdown: string,
   html?: string
 }
+
+declare type File = {
+  name: string
+}
