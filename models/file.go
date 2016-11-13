@@ -9,6 +9,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 )
 
@@ -82,8 +83,10 @@ func (f *File) RenameFile(newName string) error {
 		return err
 	}
 
+	oldPath := f.GetPath()
 	oldKey := f.Key()
 	f.Name = newName
+	newPath := f.GetPath()
 
 	// Need to check key validation, in case the new name is not valid.
 	if !f.Validate() {
@@ -98,10 +101,18 @@ func (f *File) RenameFile(newName string) error {
 	pool.Cmd("SREM", f.RegistrationKey(), oldKey)
 	pool.Cmd("SADD", f.RegistrationKey(), f.Key())
 
+	// Rename the associated file.
+	err = os.Rename(oldPath, newPath)
+	if err != nil {
+		log.Printf("Failed during file rename operation, tried `%v` -> `%v`", oldPath, newPath)
+		return err
+	}
+
 	// Save the object with the new parameters.
 	err = Save(f)
 	if err != nil {
 		log.Printf("Tried to rename file to `%v`, but couldn't save it.", newName)
+		return err
 	}
 
 	return nil

@@ -1,9 +1,6 @@
 package models
 
-import (
-	"log"
-	"testing"
-)
+import "testing"
 
 func init() {
 	Connect()
@@ -42,6 +39,19 @@ func (s *TestStructure) Key() string {
 	return "test:" + MakeKeyForTable("test")
 }
 
+func TestKeyCreation(t *testing.T) {
+	a := MakeKeyForTable("teststructure")
+	b := MakeKeyForTable("teststructure")
+
+	if a == b {
+		t.Fatalf(
+			`Key creation should always return unique values,
+			never the same. Got "%v", then "%v"`, a, b,
+		)
+	}
+
+}
+
 func TestIllegalLoad(t *testing.T) {
 	s := TestStructure{}
 	s.KeyStr = "aihsdfliuhasdf"
@@ -61,10 +71,8 @@ func TestInsertion(t *testing.T) {
 		t.Fatal("Failed to generate iterator.")
 	}
 
-	log.Printf("[deleting] will delete %d keys \n", iterator.Count())
 	for iterator.Next() {
 		ts := iterator.Value()
-		log.Printf("[deleting] deleting key `%s`\n", ts.Key())
 		Delete(ts)
 	}
 

@@ -43,6 +43,20 @@ func TestValidation(t *testing.T) {
 		t.Fatal("User should be valid... but validation failed anyway.")
 	}
 
+	result := u.Export()
+	if result["name"] != "Test Testerson" {
+		t.Fatal("Exported user isn't correct.")
+	}
+
+	_, ok := result["password"]
+	if ok {
+		t.Fatal("Exported user shouldn't contain password hash.")
+	}
+	_, ok = result["password_salt"]
+	if ok {
+		t.Fatal("Exported user shouldn't contain password salt.")
+	}
+
 }
 
 func TestUserCreation(t *testing.T) {
