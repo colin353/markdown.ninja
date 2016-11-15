@@ -143,7 +143,7 @@ class Edit extends React.Component {
   }
 
   clickFile(file: File) {
-    
+
   }
 
   clickPage(page: Page) {

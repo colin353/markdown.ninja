@@ -87,13 +87,18 @@ class Titlebar extends React.Component {
             </div>
           </div>
         ):(
-          <Button action="sign up" />
+          <Button onClick={this.context.router.push.bind(this, '/edit/login')} action="sign up" />
         )}
         <div style={{marginRight: 50}}></div>
       </div>
     );
   }
 }
+
+Titlebar.contextTypes = {
+  router: React.PropTypes.object
+}
+
 
 const styles = {
   container: {

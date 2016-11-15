@@ -1,8 +1,8 @@
 /*
-  login.js
+  signup.js
   @flow
 
-  A page for logging in.
+  A page for signing up.
 */
 
 var React = require('react');
@@ -10,16 +10,19 @@ var React = require('react');
 var Input = require('../components/input');
 var Button = require('../components/button');
 
-class Login extends React.Component {
+class Signup extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <h1>Login. </h1>
+        <h1>Sign up. </h1>
+        <p>Already have an account? Sign in.</p>
 
+        <Input label="name" />
         <Input label="domain" />
+        <Input label="email" />
         <Input label="password" type="password" />
 
-        <div style={{display: 'flex', marginTop: 10, alignItems: 'center'}}>
+        <div style={{display: 'flex', marginTop: 10, marginBottom: 20, alignItems: 'center'}}>
           <a style={styles.forgot} href="#">forgot password?</a>
           <div style={{flex: 1}}></div>
           <Button color="red" action="log in" />
@@ -43,4 +46,4 @@ const styles = {
   }
 }
 
-module.exports = Login;
+module.exports = Signup;
