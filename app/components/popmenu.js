@@ -47,11 +47,17 @@ class PopMenu extends React.Component {
     this.context.router.push('/edit/site');
   }
 
+  // When the user clicks on their domain, we'll open it for them
+  // in a new tab.
+  clickDomain() {
+    window.open(window.location.protocol + "//" + this.state.domain + "." + api.BASE_DOMAIN, '_blank');
+  }
+
   render() {
     return (
       <div style={styles.container}>
         <div style={styles.arrow}></div>
-        <div style={styles.domain}>
+        <div onClick={this.clickDomain.bind(this)} style={styles.domain}>
           <span style={styles.subdomain}>{this.state.domain}</span>
           <span>{"." + api.BASE_DOMAIN}</span>
         </div>
@@ -84,6 +90,7 @@ const styles = {
     zIndex: 10
   },
   domain: {
+    cursor: 'default',
     flex: 1,
     display: 'flex',
     alignItems: 'center',

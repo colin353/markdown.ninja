@@ -14,11 +14,15 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 
 var { Wrapper, FullScreenWrapper } = require('./components/wrappers');
+var AuthenticationWrapper = require('./components/authenticationwrapper');
 
 var routes = (
   <Router history={ReactRouter.browserHistory}>
+
     <Route path='/edit/site' component={FullScreenWrapper}>
-      <IndexRoute component={require('./pages/edit')} />
+      <Route component={AuthenticationWrapper}>
+        <IndexRoute component={require('./pages/edit')} />
+      </Route>
     </Route>
     <Route path='/' component={Wrapper}>
       <Route path='/edit/login' component={require('./pages/login')} />

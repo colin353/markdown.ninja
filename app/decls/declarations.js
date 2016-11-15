@@ -17,7 +17,8 @@ declare class Window {
   md5(target: string): string,
   ace: any,
   showdown: any,
-  addEventListener: Function
+  addEventListener: Function,
+  open: (url: string) => void
 };
 
 declare var window: Window;

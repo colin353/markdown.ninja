@@ -1,10 +1,13 @@
 package main
 
 import (
-	"github.com/colin353/portfolio/models"
-	"github.com/colin353/portfolio/requesthandler"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
+
+	"github.com/colin353/portfolio/models"
+	"github.com/colin353/portfolio/requesthandler"
 )
 
 // NewAuthenticationHandler creates an instance of the authentication
@@ -118,6 +121,7 @@ func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 		}
 	}
 
+	// Try to create the user.
 	me := models.NewUser()
 	me.Name = args.Name
 	me.Domain = args.Domain
@@ -126,7 +130,21 @@ func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 	err = models.Insert(me)
 	if err != nil {
 		log.Printf("Failed to validate: %v", err.Error())
-		return requesthandler.SimpleResponse{"failed-validation", true}
+		return requesthandler.SimpleResponse{Result: "failed-validation", Error: true}
+	}
+
+	// All users will get a couple of files created for them
+	// containing some basic defaults.
+	defaultFiles, err := filepath.Glob("./web/default/*.md")
+	for _, file := range defaultFiles {
+		log.Printf("Creating default file: %s", file)
+		p := models.Page{}
+		p.Domain = me.Domain
+		p.Name = filepath.Base(file)
+
+		fileData, _ := ioutil.ReadFile(file)
+		p.Markdown = string(fileData)
+		models.Insert(&p)
 	}
 
 	// I guess we created the user OK, so let's log them in also.
