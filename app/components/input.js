@@ -7,23 +7,59 @@
 
 var React = require('react');
 
+type Props = {
+  label: string,
+  onChange: (val: string) => void,
+  onReturn: () => void,
+  type?: string,
+  value: string
+};
+
 class Input extends React.Component {
+  props: Props;
+  static defaultProps: Props;
+
+  onChange(e: {target: {value: string}}) {
+    this.props.onChange(e.target.value);
+  }
+  onKeyDown(e: any) {
+    if(e.key == "Enter") this.props.onReturn();
+  }
   render() {
     return (
       <div style={styles.container}>
         <span style={styles.label}>{this.props.label}</span>
-        <input type={this.props.type} style={styles.input} />
+        <input onKeyDown={this.onKeyDown.bind(this)} value={this.props.value} type={this.props.type} onChange={this.onChange.bind(this)} style={styles.input} />
+        {this.props.error?(
+          <div style={styles.error}>{this.props.error}</div>
+        ):[]}
       </div>
     )
   }
 }
 Input.defaultProps = {
-  type: 'text'
+  value: '',
+  label: '',
+  type: 'text',
+  onChange: () => {},
+  onReturn: () => {}
 }
 
 const styles = {
   container: {
-
+  },
+  error: {
+    backgroundColor: 'rgb(201, 137, 134)',
+    color: 'white',
+    padding: 5,
+    marginLeft: 1,
+    position: 'relative',
+    top: -1,
+    width: 312,
+    fontSize: 14,
+    textAlign: 'center',
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3
   },
   label: {
     fontSize: 14,

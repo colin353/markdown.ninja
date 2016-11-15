@@ -156,7 +156,38 @@ func upload(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 }
 
 func renameFile(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
-	return nil
+	type renameArgs struct {
+		OldName string `json:"old_name"`
+		NewName string `json:"new_name"`
+	}
+	args := renameArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Get the old version of the page.
+	f := models.File{}
+	f.Domain = u.Domain
+	f.Name = args.OldName
+	err = models.Load(&f)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	// Rename that page.
+	err = f.RenameFile(args.NewName)
+
+	// The most common reason this fails is because of validation
+	// failure because an invalid name was provided.
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	return requesthandler.ResponseOK
 }
 
 func deleteFile(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {

@@ -30,6 +30,7 @@ class Edit extends React.Component {
     unsavedChanges: boolean,
     selectedPage: Page,
     showRenamePopover: boolean,
+    renameType: string,
     renameValue: string,
     contextPage: Page,
     contextFile: File,
@@ -63,7 +64,8 @@ class Edit extends React.Component {
       renameValue: "index.md",
       showDeletePagePopover: false,
       showDeleteFilePopover: false,
-      showUploadPopover: false
+      showUploadPopover: false,
+      renameType: 'page'
     }
 
     this.converter = new window.showdown.Converter();
@@ -165,12 +167,14 @@ class Edit extends React.Component {
   handleClick(button: string, e: any, data: { page?: Page, file?: File }) {
     if(button == "rename" && data.page) {
       this.setState({
+        renameType: 'page',
         showRenamePopover: true,
         contextPage: data.page,
         renameValue: data.page.name
       });
     } else if(button == "rename" && data.file) {
       this.setState({
+        renameType: 'file',
         showRenamePopover: true,
         contextFile: data.file,
         renameValue: data.file.name
@@ -196,7 +200,7 @@ class Edit extends React.Component {
   renameKeyPress(e: any) {
     // If they hit the enter key, we'll change the name.
     var newName = this.state.renameValue;
-    if(e.key == "Enter") {
+    if(e.key == "Enter" && this.state.renameType == 'page') {
       api.renamePage(this.state.contextPage.name, newName).then(() => {
         this.setState({showRenamePopover: false});
         return this.getPages();
@@ -207,6 +211,13 @@ class Edit extends React.Component {
           this.state.selectedPage.name = newName;
         }
         this.setState({pages, selectedPage: this.state.selectedPage});
+      });
+    } else if(e.key == "Enter" && this.state.renameType == 'file') {
+      api.renameFile(this.state.contextFile.name, newName).then(() => {
+        this.setState({showRenamePopover: false});
+        return this.getFiles();
+      }).then((files) => {
+        this.setState({files});
       });
     }
   }
@@ -306,7 +317,7 @@ class Edit extends React.Component {
           visible={this.state.showRenamePopover}
           onDismiss={() => this.setState({showRenamePopover: false})}
         >
-          <p>Renaming page from <b>{this.state.contextPage.name}</b> to: </p>
+          <p>Renaming {this.state.renameType} from <b>{this.state.renameType=='page'?this.state.contextPage.name:this.state.contextFile.name}</b> to: </p>
           <input
             ref={(r) => this.renameInput = r}
             style={{width: 380}}

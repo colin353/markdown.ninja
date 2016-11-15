@@ -13,6 +13,7 @@ declare var api: APIInstance;
 
 var Icon = require('./icon');
 var Button = require('./button');
+var Ellipsis = require('../tools/overflow-ellipsis')
 
 type Props = {
   pages: Page[],
@@ -63,11 +64,14 @@ class Tree extends React.Component {
           )
         })}
 
-        <div style={styles.row}><Icon name="folder" /> files</div>
+        {this.props.files.length?(
+          <div style={styles.row}><Icon name="folder" /> files</div>
+        ):[]}
+
         {this.props.files.map((f) => {
           return (
             <ContextMenuTrigger collect={this.collectFile.bind(this, f)} key={"page"+f.name} id="page">
-              <div onClick={this.props.clickFile.bind(this, f)} className="noselect" style={styles.indentRow}><Icon name="description" /> {f.name}</div>
+              <div onClick={this.props.clickFile.bind(this, f)} className="noselect" style={styles.indentRow}><Icon name="description" /> {Ellipsis(f.name, 19)}</div>
             </ContextMenuTrigger>
           )
         })}

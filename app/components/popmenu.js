@@ -38,7 +38,9 @@ class PopMenu extends React.Component {
   }
 
   logout() {
-    api.logout();
+    api.logout().then(() => {
+      this.context.router.push('/edit/login');
+    });
   }
 
   clickEditSite() {

@@ -36,7 +36,6 @@ class Titlebar extends React.Component {
   }
   componentDidMount() {
     api.addListener("authenticationStateChanged", "titlebar", () => {
-      console.log("authentication state changed.");
       this.setState({
         email   : api.user?api.user.email:"",
         loggedIn: api.authenticated

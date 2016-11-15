@@ -93,7 +93,7 @@ class API {
     return this.request("/api/auth/login", {domain, password}).then((response) => {
       if(response.result == "ok")
         return this.checkAuth(true);
-      else return response;
+      else throw 'login failed';
     });
   }
 
@@ -103,7 +103,7 @@ class API {
     });
   }
 
-  checkAuth() {
+  checkAuth() : Promise<boolean> {
     return this.request("/api/auth/check").then((response) => {
       this.user = response.user;
       this.setAuthenticationState(true);
@@ -143,7 +143,7 @@ class API {
     }
   }
 
-  signup(params: {name: string, domain: string, password: string}) {
+  signup(params: {name: string, domain: string, email: string, password: string}) {
     return this.request("/api/auth/signup", params);
   }
 
@@ -165,6 +165,10 @@ class API {
 
   renamePage(oldName: string, newName: string) {
     return this.request("/api/edit/rename_page", {old_name: oldName, new_name: newName});
+  }
+
+  renameFile(oldName: string, newName: string) {
+    return this.request("/api/files/rename", {old_name: oldName, new_name: newName});
   }
 
   deletePage(page: Page) {
