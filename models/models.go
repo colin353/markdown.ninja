@@ -7,8 +7,12 @@ import (
 	"reflect"
 	"strconv"
 
+	"github.com/colin353/portfolio/config"
 	"github.com/mediocregopher/radix.v2/pool"
 )
+
+// AppConfig is an instance of the application config.
+var AppConfig *config.Config
 
 // Model is the basic interface required for an object to be
 // saved to the redis store. Fundamentally, you need a function
@@ -38,7 +42,7 @@ var connectionPool *pool.Pool
 // to query the redis database concurrently.
 func Connect() {
 	var err error
-	connectionPool, err = pool.New("tcp", "localhost:6379", 10)
+	connectionPool, err = pool.New("tcp", AppConfig.RedisURL, 10)
 	if err != nil {
 		log.Fatal("Unable to connect to redis server.")
 	}
@@ -150,7 +154,12 @@ func Save(m Model) error {
 // Insert creates a new instance of a model in the database. It'll
 // return an error if the key already exists.
 func Insert(m Model) error {
-	// First, register the RegistrationKey into the registration set.
+	err := saveOrInsert(m, false)
+	if err != nil {
+		return err
+	}
+
+	// Now, register the RegistrationKey into the registration set.
 	p, err := connectionPool.Get()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
@@ -158,7 +167,7 @@ func Insert(m Model) error {
 	}
 	p.Cmd("SADD", m.RegistrationKey(), m.Key())
 
-	return saveOrInsert(m, false)
+	return nil
 }
 
 // ModelList is an implementation of a ModelIterator.
@@ -252,10 +261,10 @@ func saveOrInsert(m Model, expectKey bool) error {
 
 	keyAlreadyExists, _ := response.Int()
 	if !expectKey && keyAlreadyExists == 1 {
-		return errors.New("Key already exists: can't insert. Did you mean to save?")
+		return fmt.Errorf("Key `%s` already exists: can't insert. Did you mean to save?", m.Key())
 	}
 	if expectKey && keyAlreadyExists == 0 {
-		return errors.New("Key doesn't exist: can't save. Did you mean to insert?")
+		return fmt.Errorf("Key `%s` doesn't exist: can't save. Did you mean to insert?", m.Key())
 	}
 
 	response = p.Cmd("HMSET", m.Key(), instanceMap)

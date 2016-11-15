@@ -1,6 +1,5 @@
 /*
   relative-to-absolute.js
-  @flow
 
   This function takes a URL and converts it from relative form
   to absolute form. It's used to show the HTML previews, which

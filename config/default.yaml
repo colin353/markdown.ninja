@@ -1,0 +1,22 @@
+# This configuration file contains the default
+# configuration values for the software. If you
+# want to ovverride them, you have to options:
+#   1. Create a file in this directory called
+#      config.yaml and specify overrides there
+#
+#   2. Set environment variables using the prefix
+#      APPCONFIG_ and in uppercase, for example,
+#      APPCONFIG_REDISURL.
+
+# Port: this is the port that the webserver will
+# run on.
+port: 8080
+
+# RedisURL: this tells the server where to access
+# the redis database.
+redisurl: localhost:6379
+
+# Data directory. This can either be a path relative
+# to the executable, or an absolute path. It is where
+# files will be stored/accessed.
+datadirectory: ./data

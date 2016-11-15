@@ -5,10 +5,15 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/colin353/portfolio/config"
 	"github.com/colin353/portfolio/models"
 	"github.com/colin353/portfolio/requesthandler"
 	"github.com/gorilla/context"
 )
+
+// AppConfig contains the application configuration, which is loaded
+// from the config yaml files and overridden by environment variables.
+var AppConfig *config.Config
 
 // indexHandler serves the index.html page to the group of
 // subpages which are routed by react.js on the client.
@@ -29,6 +34,10 @@ func subdomainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// Load the configuration file, and distribute it to the modules.
+	AppConfig = config.LoadConfig("./config")
+	models.AppConfig = AppConfig
+
 	// Set up routing.
 	http.HandleFunc("/api/auth/", requesthandler.CreateHandler(NewAuthenticationHandler()))
 	http.HandleFunc("/api/edit/", requesthandler.CreateAuthenticatedHandler(NewEditHandler()))
@@ -41,7 +50,7 @@ func main() {
 	models.Connect()
 
 	// Start up the server.
-	err := http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
+	err := http.ListenAndServe(":"+AppConfig.Port, context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatalf("Unable to start server: %v", err.Error())
 	}

@@ -18,6 +18,7 @@ type Props = {
   pages: Page[],
   files: File[],
   clickPage: (p: Page) => void,
+  clickFile: (f: File) => void,
   onAddNewPage?: () => void,
   onUploadFile?: () => void
 }
@@ -66,7 +67,7 @@ class Tree extends React.Component {
         {this.props.files.map((f) => {
           return (
             <ContextMenuTrigger collect={this.collectFile.bind(this, f)} key={"page"+f.name} id="page">
-              <div onClick={this.props.clickPage.bind(this, f)} className="noselect" style={styles.indentRow}><Icon name="description" /> {f.name}</div>
+              <div onClick={this.props.clickFile.bind(this, f)} className="noselect" style={styles.indentRow}><Icon name="description" /> {f.name}</div>
             </ContextMenuTrigger>
           )
         })}

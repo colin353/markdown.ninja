@@ -47,12 +47,10 @@ func (f *File) RegistrationKey() string {
 // acceptable to be inserted into the database.
 func (f *File) Validate() bool {
 	if !domainValidator.MatchString(f.Domain) {
-		log.Printf("Validation failed on page %s, illegal domain '%s'\n", f.Name, f.Domain)
 		return false
 	}
 
 	if !filenameValidator.MatchString(f.Name) {
-		log.Printf("Validation failed on page %s, illegal filename '%s'\n", f.Name, f.Name)
 		return false
 	}
 
@@ -62,7 +60,7 @@ func (f *File) Validate() bool {
 // GetPath returns the path that the file should be uploaded
 // to, or can be accessed from.
 func (f *File) GetPath() string {
-	return fmt.Sprintf("./data/%s-%s-%s", f.Domain, f.Hash, f.Name)
+	return fmt.Sprintf("%s/%s-%s-%s", AppConfig.DataDirectory, f.Domain, f.Hash, f.Name)
 }
 
 var filenameReplacer = regexp.MustCompile("[^A-Za-z0-9_\\.]+")
@@ -104,14 +102,12 @@ func (f *File) RenameFile(newName string) error {
 	// Rename the associated file.
 	err = os.Rename(oldPath, newPath)
 	if err != nil {
-		log.Printf("Failed during file rename operation, tried `%v` -> `%v`", oldPath, newPath)
 		return err
 	}
 
 	// Save the object with the new parameters.
 	err = Save(f)
 	if err != nil {
-		log.Printf("Tried to rename file to `%v`, but couldn't save it.", newName)
 		return err
 	}
 

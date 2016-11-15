@@ -2,25 +2,10 @@ package models
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 )
-
-func init() {
-	Connect()
-
-	// Delete all file records under the domain "testdomain"
-	f := File{}
-	f.Domain = "testdomain"
-	iterator, err := GetList(&f)
-	if err != nil {
-		panic("Unable to get a list of file records under `testdomain`")
-	}
-
-	for iterator.Next() {
-		Delete(iterator.Value())
-	}
-}
 
 func TestFileValidation(t *testing.T) {
 	f := File{}
@@ -35,7 +20,7 @@ func TestFileValidation(t *testing.T) {
 	f.SetNameSafely("!illegal-name$")
 	err = Insert(&f)
 	if err != nil {
-		t.Fatalf("Unable to safely set illegal name -> legal one? New name: `%v`", f.Name)
+		t.Fatalf("Unable to safely set illegal name -> legal one? New name: `%v`. Reason: %s", f.Name, err.Error())
 	}
 
 	f.Domain = "!illegal-$domain"
@@ -43,7 +28,6 @@ func TestFileValidation(t *testing.T) {
 	if err == nil {
 		t.Fatalf("Shouldn't be allowed to save to illegal domain name `%s`", f.Domain)
 	}
-
 }
 
 func TestFileCreation(t *testing.T) {
@@ -77,14 +61,17 @@ func TestFileCreation(t *testing.T) {
 
 func TestFileRename(t *testing.T) {
 	f := File{}
-	f.Name = "test123.md"
+	f.Name = "test111.md"
 	f.Domain = "testdomain"
 	f.Hash = "abcdef012345"
-	Save(&f)
+	err := Insert(&f)
+	if err != nil {
+		t.Fatalf("Unable to create file test111.md in database: %v", err.Error())
+	}
 
 	ioutil.WriteFile(f.GetPath(), []byte("this is a test"), 0644)
 
-	err := f.RenameFile("test456.md")
+	err = f.RenameFile("test456.md")
 	if err != nil {
 		t.Fatalf("Failed to rename the file.")
 	}
@@ -92,10 +79,14 @@ func TestFileRename(t *testing.T) {
 	g := File{}
 	g.Name = "test456.md"
 	g.Domain = "testdomain"
-	Load(&g)
+	err = Load(&g)
+	if err != nil {
+		t.Fatalf("Error loading file: %s", err.Error())
+	}
 
 	fileContents, _ := ioutil.ReadFile(g.GetPath())
 	if string(fileContents) != "this is a test" {
+		log.Printf("Contents at %s were: %s", g.GetPath(), string(fileContents))
 		t.Fatalf("After renaming file, the data stored in the file wasn't moved.")
 	}
 

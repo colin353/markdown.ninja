@@ -5,22 +5,6 @@ import (
 	"testing"
 )
 
-func init() {
-	Connect()
-
-	// Delete all file records under the domain "testdomain"
-	p := Page{}
-	p.Domain = "testdomain"
-	iterator, err := GetList(&p)
-	if err != nil {
-		panic("Unable to get a list of page records under `testdomain`")
-	}
-
-	for iterator.Next() {
-		Delete(iterator.Value())
-	}
-}
-
 func TestSiteValidation(t *testing.T) {
 	p := &Page{}
 	p.Domain = "testdomain"
@@ -81,6 +65,8 @@ func TestPageRename(t *testing.T) {
 	}
 
 	g := Page{}
+	g.Name = "newName.md"
+	g.Domain = p.Domain
 	err = Load(&g)
 	if err != nil {
 		t.Fatalf("Failed to load newly renamed page: %v", err.Error())

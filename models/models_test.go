@@ -1,9 +1,58 @@
 package models
 
-import "testing"
+import (
+	"log"
+	"testing"
+
+	"github.com/colin353/portfolio/config"
+)
 
 func init() {
+	AppConfig = config.LoadConfig("../config")
 	Connect()
+
+	// Delete all file records under the domain "testdomain"
+	f := File{}
+	f.Domain = "testdomain"
+	iterator, err := GetList(&f)
+	if err != nil {
+		panic("Unable to get a list of file records under `testdomain`")
+	}
+
+	for iterator.Next() {
+		err = Delete(iterator.Value())
+		if err != nil {
+			log.Printf("Error deleting file: %s", err.Error())
+		}
+	}
+
+	p := Page{}
+	p.Domain = "testdomain"
+	iterator, err = GetList(&p)
+	if err != nil {
+		panic("Unable to get a list of page records under `testdomain`")
+	}
+
+	for iterator.Next() {
+		err = Delete(iterator.Value())
+		if err != nil {
+			panic("Can't scrub page.")
+		}
+	}
+
+	u := User{}
+	u.Domain = "testdomain"
+	iterator, err = GetList(&u)
+	if err != nil {
+		panic("Unable to get a list of user records under `testdomain`")
+	}
+
+	for iterator.Next() {
+		err = Delete(iterator.Value())
+		if err != nil {
+			panic("Can't delete a user.")
+		}
+	}
 }
 
 type TestStructure struct {

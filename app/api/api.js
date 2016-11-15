@@ -201,7 +201,7 @@ class API {
     }
 
     request.upload.addEventListener('progress', (e: Event) => {
-      onProgress(100.0*e.loaded/e.total, e);
+      if(e.loaded && e.total) onProgress(100.0*e.loaded/e.total, e);
     }, false);
 
     request.open('POST', this.BASE_URL + "/api/files/upload");

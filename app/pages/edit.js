@@ -142,6 +142,10 @@ class Edit extends React.Component {
     }
   }
 
+  clickFile(file: File) {
+    
+  }
+
   clickPage(page: Page) {
     // Don't do anything if we are already displaying that page.
     if(page.name == this.state.selectedPage) return;
@@ -157,6 +161,7 @@ class Edit extends React.Component {
       });
     })
   }
+
   handleClick(button: string, e: any, data: { page?: Page, file?: File }) {
     if(button == "rename" && data.page) {
       this.setState({
@@ -214,7 +219,7 @@ class Edit extends React.Component {
 
   deletePage(page: Page) {
     api.deletePage(page).then(() => {
-      this.setState({showDeletePopover: false});
+      this.setState({showDeletePagePopover: false});
       return this.getPages();
     }).then((pages) => {
       // If we are currently editing the file that was deleted, let's
@@ -264,6 +269,7 @@ class Edit extends React.Component {
           onAddNewPage={this.addNewPage.bind(this)}
           onUploadFile={this.clickUploadFile.bind(this)}
           clickPage={this.clickPage.bind(this)}
+          clickFile={this.clickFile.bind(this)}
           pages={this.state.pages}
           files={this.state.files}
         />

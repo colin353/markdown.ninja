@@ -4,10 +4,6 @@ import (
 	"testing"
 )
 
-func init() {
-	Connect()
-}
-
 func TestValidation(t *testing.T) {
 	// Create a user with valid data, which should
 	// actually pass validation.
@@ -62,6 +58,7 @@ func TestValidation(t *testing.T) {
 func TestUserCreation(t *testing.T) {
 	u := NewUser()
 	u.Name = "Colin Merkel"
+	u.Domain = "testdomain"
 	u.SetPassword("gluten tag")
 	u.Email = "colin353@gmail.com"
 	u.MakeDefault()
@@ -78,7 +75,7 @@ func TestUserCreation(t *testing.T) {
 	Insert(u)
 
 	g := User{}
-	g.Domain = "colinmerkel"
+	g.Domain = "testdomain"
 	err := Load(&g)
 	if err != nil {
 		t.Fatal("Couldn't load saved user.")

@@ -5,3 +5,4 @@ app/node_modules
 *debug.log
 web/js/app.js
 data/*
+config/config.yaml
