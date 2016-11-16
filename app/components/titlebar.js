@@ -74,7 +74,7 @@ class Titlebar extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <span style={styles.title}>Portfolio</span>
+        <span onClick={this.context.router.push.bind(this.context.router, '/')} style={styles.title} className="noselect">Portfolio</span>
         <div style={styles.spacer}></div>
         {this.state.loggedIn?(
           <div>
@@ -86,7 +86,7 @@ class Titlebar extends React.Component {
             </div>
           </div>
         ):(
-          <Button onClick={this.context.router.push.bind(this, '/edit/login')} action="sign up" />
+          <Button onClick={this.context.router.push.bind(this, '/edit/signup')} action="sign up" />
         )}
         <div style={{marginRight: 50}}></div>
       </div>

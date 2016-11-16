@@ -25,6 +25,7 @@ var routes = (
       </Route>
     </Route>
     <Route path='/' component={Wrapper}>
+      <IndexRoute component={require('./pages/index')} />
       <Route path='/edit/login' component={require('./pages/login')} />
       <Route path='/edit/signup' component={require('./pages/signup')} />
       <Route path="*" component={require('./pages/404')}/>

@@ -9,6 +9,7 @@ var React = require('react');
 
 var Input = require('../components/input');
 var Button = require('../components/button');
+var Debounce = require('../tools/debounce');
 
 import type { APIInstance } from '../api/api';
 declare var api: APIInstance;
@@ -21,8 +22,12 @@ class Signup extends React.Component {
     password: string,
     emailError: string,
     passwordError: string,
-    domainError: string
+    domainError: string,
+    domainTaken: boolean,
+    validDomain: boolean
   };
+
+  checkDomain_debounced: Function;
 
   constructor(props: {}) {
     super(props);
@@ -34,21 +39,50 @@ class Signup extends React.Component {
       password: "",
       emailError: '',
       passwordError: '',
-      domainError: ''
+      domainError: '',
+      domainTaken: false,
+      validDomain: false
     }
+
+    this.checkDomain_debounced = Debounce(this.checkDomain.bind(this), 500);
   }
+
+  checkDomain() {
+    api.checkDomain(this.state.domain).then((available) => {
+      var domainShouldBeValid = (this.state.domain.length > 0 && this.state.domain.length <= 20)
+      if(available) this.setState({
+        domainTaken: false,
+        validDomain: domainShouldBeValid,
+        domainError: domainShouldBeValid?'':this.state.domainError
+      });
+      else this.setState({
+        domainTaken: true,
+        validDomain: false,
+        domainError: 'that domain is already taken'
+      });
+    })
+  }
+
   validate() {
     // Remove all errors.
     this.setState({
       emailError: '',
       passwordError: '',
-      domainError: ''
+      domainError: this.state.domainTaken?this.state.domainError:''
     })
+
+    // If the domain name is already taken, can't create the account.
+    if(this.state.domainTaken) return false;
 
     // The domain is enforced to be valid using the setDomain function.
     // But you'll need to provide at least SOME domain.
     if(this.state.domain.length == 0) {
       this.setState({domainError: 'you must choose a domain'});
+      return false;
+    }
+
+    if(this.state.domain.length > 20) {
+      this.setState({domainError: 'your domain is too long'});
       return false;
     }
 
@@ -78,7 +112,8 @@ class Signup extends React.Component {
       password: this.state.password,
       name: this.state.name,
       domain: this.state.domain
-    }).then(() => {
+    }).then((result) => {
+      if(result.error) throw 'signup-failed';
       // Signup worked.
       return api.checkAuth()
     }).then(() => {
@@ -93,6 +128,8 @@ class Signup extends React.Component {
   setDomain(domain: string) {
     // Ensure only valid domains are used.
     this.setState({domain: domain.toLowerCase().replace(/[^A-Za-z0-9_\\.]+/g, '')})
+
+    this.checkDomain_debounced();
   }
   render() {
     return (
@@ -101,7 +138,7 @@ class Signup extends React.Component {
         <p>Already have an account? <a href="#" onClick={this.context.router.push.bind(this.context.router, '/edit/login')}>Sign in.</a></p>
 
         <Input onReturn={this.signUp.bind(this)} value={this.state.name} onChange={(name) => this.setState({name})} label="name" />
-        <Input onReturn={this.signUp.bind(this)} error={this.state.domainError} value={this.state.domain} onChange={this.setDomain.bind(this)} label="domain" />
+        <Input onReturn={this.signUp.bind(this)} success={this.state.validDomain?("your url: "+this.state.domain+"."+api.BASE_DOMAIN):""} error={this.state.domainError} value={this.state.domain} onChange={this.setDomain.bind(this)} label="domain" />
         <Input onReturn={this.signUp.bind(this)} error={this.state.emailError} value={this.state.email} onChange={(email) => this.setState({email})} label="email" />
         <Input onReturn={this.signUp.bind(this)} error={this.state.passwordError} value={this.state.password} onChange={(password) => this.setState({password})} label="password" type="password" />
 

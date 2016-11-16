@@ -16,10 +16,11 @@ import (
 // A File is a file that a user has uploaded, such
 // as a resume or an image.
 type File struct {
-	Name   string `json:"name"`
-	Hash   string `json:"hash"`
-	Size   int    `json:"size"`
-	Domain string `json:"domain"`
+	Name        string `json:"name"`
+	Hash        string `json:"hash"`
+	Size        int    `json:"size"`
+	Domain      string `json:"domain"`
+	ContentType string `json:"content_type"`
 }
 
 // MakeDefault initializes the file and sets defaults.

@@ -54,7 +54,8 @@ const styles = {
     flexDirection: 'column'
   },
   content: {
-    minHeight: 300
+    minHeight: 300,
+    paddingBottom: 50
   },
   fullscreenContent: {
     flex: 1,

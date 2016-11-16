@@ -15,10 +15,11 @@ import (
 func NewAuthenticationHandler() *requesthandler.GenericRequestHandler {
 	a := requesthandler.GenericRequestHandler{}
 	a.RouteMap = map[string]requesthandler.Responder{
-		"login":  login,
-		"check":  check,
-		"logout": logout,
-		"signup": signup,
+		"login":        login,
+		"check":        check,
+		"logout":       logout,
+		"signup":       signup,
+		"check_domain": checkDomain,
 	}
 	return &a
 }
@@ -99,6 +100,35 @@ func logout(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 	return requesthandler.ResponseOK
 }
 
+// checkDomain looks takes a domain string and checks if it is available
+// for registration or not.
+func checkDomain(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type checkDomainArgs struct {
+		Domain string `json:"domain"`
+	}
+	args := checkDomainArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	user := models.User{}
+	user.Domain = args.Domain
+	err = models.Load(&user)
+	if err != nil {
+		return requesthandler.SimpleResponse{
+			Result: "domain-available",
+			Error:  false,
+		}
+	}
+
+	return requesthandler.SimpleResponse{
+		Result: "domain-exists",
+		Error:  false,
+	}
+}
+
 func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
 	type signupArgs struct {
 		Name     string `json:"name"`
@@ -126,6 +156,14 @@ func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 	me.Name = args.Name
 	me.Domain = args.Domain
 	me.Email = args.Email
+
+	// We don't really need an email address, except for when they need
+	// to reset their password. So if they don't set an email address,
+	// we'll just set their email to fake@fake.com
+	if me.Email == "" {
+		me.Email = "fake@fake.com"
+	}
+
 	me.SetPassword(args.Password)
 	err = models.Insert(me)
 	if err != nil {

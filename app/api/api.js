@@ -147,6 +147,13 @@ class API {
     return this.request("/api/auth/signup", params);
   }
 
+  // Returns true if the domain is available.
+  checkDomain(domain: string) : Promise<bool> {
+    return this.request("/api/auth/check_domain", {domain}).then((result) => {
+      return result.result == "domain-available";
+    })
+  }
+
   getPage(name: string) : Promise<Page> {
     return this.request("/api/edit/page", {name: name})
   }

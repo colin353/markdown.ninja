@@ -12,7 +12,9 @@ type Props = {
   onChange: (val: string) => void,
   onReturn: () => void,
   type?: string,
-  value: string
+  value: string,
+  error: string,
+  success: string,
 };
 
 class Input extends React.Component {
@@ -32,6 +34,8 @@ class Input extends React.Component {
         <input onKeyDown={this.onKeyDown.bind(this)} value={this.props.value} type={this.props.type} onChange={this.onChange.bind(this)} style={styles.input} />
         {this.props.error?(
           <div style={styles.error}>{this.props.error}</div>
+        ):this.props.success?(
+          <div style={styles.success}>{this.props.success}</div>
         ):[]}
       </div>
     )
@@ -42,7 +46,9 @@ Input.defaultProps = {
   label: '',
   type: 'text',
   onChange: () => {},
-  onReturn: () => {}
+  onReturn: () => {},
+  error: '',
+  success: ''
 }
 
 const styles = {
@@ -50,6 +56,19 @@ const styles = {
   },
   error: {
     backgroundColor: 'rgb(201, 137, 134)',
+    color: 'white',
+    padding: 5,
+    marginLeft: 1,
+    position: 'relative',
+    top: -1,
+    width: 312,
+    fontSize: 14,
+    textAlign: 'center',
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3
+  },
+  success: {
+    backgroundColor: '#7A89C2',
     color: 'white',
     padding: 5,
     marginLeft: 1,

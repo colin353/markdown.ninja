@@ -25,17 +25,12 @@ import (
 func NewFileHandler() *requesthandler.GenericRequestHandler {
 	a := requesthandler.GenericRequestHandler{}
 	a.RouteMap = map[string]requesthandler.Responder{
-		"file":   file,
 		"files":  files,
 		"upload": upload,
 		"rename": renameFile,
 		"delete": deleteFile,
 	}
 	return &a
-}
-
-func file(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
-	return nil
 }
 
 func files(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
