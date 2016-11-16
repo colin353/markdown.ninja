@@ -180,8 +180,10 @@ func signup(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 		p.Domain = me.Domain
 		p.Name = filepath.Base(file)
 
-		fileData, _ := ioutil.ReadFile(file)
-		p.Markdown = string(fileData)
+		markdown, _ := ioutil.ReadFile(file)
+		html, _ := ioutil.ReadFile(file + ".html")
+		p.Markdown = string(markdown)
+		p.HTML = string(html)
 		models.Insert(&p)
 	}
 

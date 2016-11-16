@@ -12,6 +12,17 @@ type User = {
   email: string
 }
 
+// If we are running a prerender script or a test, the window
+// object may not be defined. In that case, we'll create a dummy
+// object so that we don't cause all kinds of undefined errors.
+if(typeof window == 'undefined')
+  window = {
+    location: { origin: '', host: ''},
+    Cookies: { set: () => {}, get: () => {}, remove: () => {} },
+    document: {},
+    addEventListener: () => {}
+  };
+
 class API {
   BASE_URL: string;
   BASE_DOMAIN: string;

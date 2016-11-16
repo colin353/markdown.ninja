@@ -6,3 +6,4 @@ app/node_modules
 web/js/app.js
 data/*
 config/config.yaml
+web/default/*.md.html
