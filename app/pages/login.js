@@ -50,11 +50,13 @@ class Login extends React.Component {
     })
   }
 
+  clickSignup() { this.context.router.push("/edit/signup"); }
+
   render() {
     return (
       <div style={styles.container}>
         <h1>Login. </h1>
-        <p>Don't have an account? <a href="#" onClick={this.context.router.push.bind(this.context.router, '/edit/signup')}>Sign up.</a></p>
+        <p>Don't have an account? <a href="#" onClick={this.clickSignup.bind(this)}>Sign up.</a></p>
 
         <Input onReturn={this.login.bind(this)} value={this.state.domain} onChange={(domain) => this.setState({domain})} label="domain" />
         <Input onReturn={this.login.bind(this)} error={this.state.passwordError} value={this.state.password} onChange={(password) => this.setState({password})} label="password" type="password" />

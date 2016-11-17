@@ -125,7 +125,7 @@ class Signup extends React.Component {
       this.context.router.push("/edit/site");
     }).catch(() => {
       // Internal server error, I guess.
-      this.setState({passwordError: "something went wrong creating account."})
+      this.setState({passwordError: "something went wrong creating account."});
     })
   }
 
@@ -135,11 +135,14 @@ class Signup extends React.Component {
 
     this.checkDomain_debounced();
   }
+
+  clickLogin() { this.context.router.push('/edit/login'); }
+
   render() {
     return (
       <div style={styles.container}>
         <h1>Sign up. </h1>
-        <p>Already have an account? <a href="#" onClick={this.context.router.push.bind(this.context.router, '/edit/login')}>Sign in.</a></p>
+        <p>Already have an account? <a href="#" onClick={this.clickLogin.bind(this)}>Sign in.</a></p>
 
         <Input onReturn={this.signUp.bind(this)} value={this.state.name} onChange={(name) => this.setState({name})} label="name" />
         <Input onReturn={this.signUp.bind(this)} success={this.state.validDomain?("your url: "+this.state.domain+"."+this.props.api.BASE_DOMAIN):""} error={this.state.domainError} value={this.state.domain} onChange={this.setDomain.bind(this)} label="domain" />

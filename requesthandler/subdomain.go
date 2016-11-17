@@ -25,7 +25,14 @@ func SubdomainHandler(w http.ResponseWriter, r *http.Request) {
 	// one we recognize as our own.
 	subdomain := getSubdomainFromHost(r.Host, AppConfig.Hostnames)
 	if subdomain == "" {
-		http.FileServer(http.Dir("./web")).ServeHTTP(w, r)
+		// Special case: if we're actually looking at the index page,
+		// we need to consider using the prerendered files.
+		if r.RequestURI == "/" {
+			log.Println("Served prerendered index.")
+			http.ServeFile(w, r, "web/prerendered/index.html")
+		} else {
+			http.FileServer(http.Dir("./web")).ServeHTTP(w, r)
+		}
 		return
 	}
 	renderSubdomain(subdomain, w, r)

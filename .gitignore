@@ -7,3 +7,4 @@ web/js/app.js
 data/*
 config/config.yaml
 web/default/*.md.html
+web/prerendered/*.html

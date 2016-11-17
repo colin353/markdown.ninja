@@ -10,6 +10,7 @@ var React = require('react');
 var Button = require('../components/button');
 
 class Index extends React.Component {
+  clickSignup() { this.context.router.push('/edit/signup'); }
   render() {
     return (
       <div style={styles.container}>
@@ -25,7 +26,7 @@ class Index extends React.Component {
         </p>
 
         <div style={styles.buttonRow}>
-          <Button onClick={this.context.router.push.bind(this.context.router, '/edit/signup')} color="red" action="sign up free" />
+          <Button onClick={this.clickSignup.bind(this)} color="red" action="sign up free" />
         </div>
       </div>
     );

@@ -8,6 +8,7 @@
 var React = require('react');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
+var Showdown = require('showdown');
 var Tree = require('../components/tree');
 var Button = require('../components/button');
 var Editor = require('../components/editor');
@@ -72,7 +73,7 @@ class Edit extends React.Component {
       renameType: 'page'
     }
 
-    this.converter = new window.showdown.Converter();
+    this.converter = new Showdown.Converter();
   }
 
   componentDidMount() {

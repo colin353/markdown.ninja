@@ -14,6 +14,8 @@ var converter = new showdown.Converter();
 // "./web/default" folder.
 glob("../web/default/*.md", {}, (err, files) => {
   for(const f of files) {
+    console.log("Rendering: ", f, " --> HTML");
+    
     fs.readFile(f, 'utf-8', (err, data) => {
       if(err) {
         console.log("Err: couldn't read file! ", f)

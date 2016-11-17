@@ -14,12 +14,6 @@ import (
 // from the config yaml files and overridden by environment variables.
 var AppConfig *config.Config
 
-// indexHandler serves the index.html page to the group of
-// subpages which are routed by react.js on the client.
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "web/index.html")
-}
-
 func main() {
 	// Load the configuration file, and distribute it to the modules.
 	AppConfig = config.LoadConfig("./config")
@@ -30,8 +24,8 @@ func main() {
 	http.HandleFunc("/api/auth/", requesthandler.CreateHandler(NewAuthenticationHandler()))
 	http.HandleFunc("/api/edit/", requesthandler.CreateAuthenticatedHandler(NewEditHandler()))
 	http.HandleFunc("/api/files/", requesthandler.CreateAuthenticatedHandler(NewFileHandler()))
-	http.HandleFunc("/edit/", indexHandler)
-	//http.HandleFunc("/domain", handleSubdomain)
+	http.HandleFunc("/edit/", requesthandler.ReactHandler)
+
 	http.HandleFunc("/", requesthandler.SubdomainHandler)
 
 	// Connect to redis.
