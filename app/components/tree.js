@@ -93,7 +93,6 @@ const styles = {
     color: '#c4c4c4',
     backgroundColor: '#716669',
     width: 300,
-    height: '100%',
     display: 'flex',
     flexDirection: 'column'
   },

@@ -51,10 +51,10 @@ class Editor extends React.Component {
     if(!this.props.visible) containerstyle.display = 'none';
     return (
       <div style={containerstyle}>
-        <pre style={styles.editor}
+        <div style={styles.editor}
           id="editor"
           ref={(e) => this.editor = e}
-        ></pre>
+        ></div>
       </div>
     );
   }
@@ -62,14 +62,14 @@ class Editor extends React.Component {
 
 const styles = {
   container: {
-    flex: 1
+    flex: 1,
+    position: 'relative'
   },
   editor: {
     fontSize: 16,
     width: '100%',
     height: '100%',
-    position:'relative',
-    top:-16
+    position:'absolute'
   }
 };
 
