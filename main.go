@@ -25,6 +25,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 // it determines that the request is for a subdomain, it'll hand off that
 // request to the subdomain renderer.
 func subdomainHandler(w http.ResponseWriter, r *http.Request) {
+	// In case we are running this from an IP address, or from a subdomain,
+	// we need to make sure we're looking at the subdomain lower than the
+	// one we recognize as our own.
 	domains := strings.Split(r.Host, ".")
 	if len(domains) == 1 {
 		http.FileServer(http.Dir("./web")).ServeHTTP(w, r)

@@ -1,5 +1,6 @@
 /*
   declarations.js
+  @flow
 
   A place to put global flow declarations.
 */
@@ -18,7 +19,14 @@ declare class Window {
   ace: any,
   showdown: any,
   addEventListener: Function,
-  open: (url: string) => void
+  open: (url: string) => void,
+  innerWidth: number,
+  innerHeight: number
+};
+
+type UploadEvent = {
+  loaded: number,
+  total: number
 };
 
 declare var window: Window;

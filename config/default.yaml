@@ -12,6 +12,16 @@
 # run on.
 port: 8080
 
+
+# Hostnames: a list of names which can be used as
+# hostnames. The first entry is the default hostname.
+# If you want to override this parameter using environment
+# variables, you can do so by specifying them seperated
+# by comma (no spaces), e.g:
+# APPCONFIG_HOSTNAMES=localhost,server1,server2
+hostnames:
+  - localhost
+
 # RedisURL: this tells the server where to access
 # the redis database.
 redisurl: localhost:6379

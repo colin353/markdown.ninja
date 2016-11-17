@@ -15,7 +15,7 @@ type Props = {
   visible: boolean,
   onDismiss: Function,
   onFocus: Function,
-  children?: Array<React.Component>
+  children?: Array<React.Component<any,any,any>>
 }
 
 class Popover extends React.Component {

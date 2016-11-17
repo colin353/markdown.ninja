@@ -18,11 +18,11 @@ echo "Formatting..."
 gofmt -w ./
 
 echo "Checking flow types..."
-flow check app/main.js
-flow coverage app/main.js
+./app/node_modules/.bin/flow check app/main.js
+./app/node_modules/.bin/flow coverage app/main.js
 
 echo "Checking for linter errors..."
-eslint -c app/.eslint.json app/main.js
+./app/node_modules/.bin/eslint -c app/.eslint.json app/main.js
 
 echo "Running jest..."
 cd app/ && npm run test

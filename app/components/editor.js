@@ -15,7 +15,7 @@ type Props = {
 }
 
 class Editor extends React.Component {
-  editor: React.Component;
+  editor: React.Component<any, any, any>;
   ace: any;
 
   componentDidMount() {

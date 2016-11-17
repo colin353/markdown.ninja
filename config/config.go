@@ -1,11 +1,14 @@
 package config
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/imdario/mergo"
 
 	"gopkg.in/yaml.v2"
 )
@@ -22,6 +25,7 @@ type Config struct {
 	Port          string
 	RedisURL      string
 	DataDirectory string
+	Hostnames     []string
 }
 
 // LoadConfig generates the configuration using three rules:
@@ -30,39 +34,66 @@ type Config struct {
 // 3. override all configuration parameters with enviroment vars
 //    if they exist.
 func LoadConfig(directory string) *Config {
-	c := Config{}
+	config := Config{}
+	defaultConfig := Config{}
 
-	defaultConfig, err := ioutil.ReadFile(directory + "/default.yaml")
+	defaultConfigBytes, err := ioutil.ReadFile(directory + "/default.yaml")
 	if err != nil {
 		panic("Unable to read configuration file.")
 	}
-	err = yaml.Unmarshal(defaultConfig, &c)
+	err = yaml.Unmarshal(defaultConfigBytes, &defaultConfig)
 	if err != nil {
 		panic("Unable to parse configuration file `default.yaml`.")
 	}
 
 	// Try to load special config from the config.yaml file, but if
 	// it doesn't exist, that's fine, we can ignore it.
-	specialConfig, err := ioutil.ReadFile(directory + "/config.yaml")
+	specialConfigBytes, err := ioutil.ReadFile(directory + "/config.yaml")
 	if err == nil {
-		err = yaml.Unmarshal(specialConfig, &c)
+		err = yaml.Unmarshal(specialConfigBytes, &config)
 		if err != nil {
 			panic("Unable to parse configuration file `config/default.yaml`.")
 		}
 	}
 
+	mergo.Merge(&config, defaultConfig)
+
 	// Now override all parameters with environment variables, if they exist.
-	instanceValue := reflect.ValueOf(&c).Elem()
-	instanceType := reflect.TypeOf(&c).Elem()
+	instanceValue := reflect.ValueOf(&config).Elem()
+	instanceType := reflect.TypeOf(&config).Elem()
 	for i := 0; i < instanceValue.NumField(); i++ {
 		t := instanceType.Field(i)
 		v := instanceValue.Field(i)
 
 		env := os.Getenv(EnvPrefix + strings.ToUpper(t.Name))
-		if env != "" {
-			log.Printf("Override detected on %v", EnvPrefix+strings.ToUpper(t.Name))
+		if env == "" {
+			continue
+		}
+		// If we reach this point, the user has specified an environment variable
+		// override. So we need to check the destination type, and override the
+		// config value with the environment variable.
+
+		typ := v.Type().Kind()
+		switch typ {
+		case reflect.String:
 			v.SetString(env)
+		// Only an array/slice of strings is permitted right now.
+		case reflect.Slice:
+			array := strings.Split(env, ",")
+			value := reflect.MakeSlice(reflect.SliceOf(reflect.TypeOf("")), 0, len(array))
+
+			for _, el := range array {
+				x := reflect.ValueOf(el)
+				value = reflect.Append(value, x)
+			}
+			v.Set(value)
+		default:
+			log.Printf("Unexpected type in configuration: %v", typ)
 		}
 	}
-	return &c
+
+	result, err := json.MarshalIndent(config, "", "  ")
+	log.Printf("Starting up with settings: \n %s", string(result))
+
+	return &config
 }

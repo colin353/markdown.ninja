@@ -150,7 +150,7 @@ class Edit extends React.Component {
 
   clickPage(page: Page) {
     // Don't do anything if we are already displaying that page.
-    if(page.name == this.state.selectedPage) return;
+    if(page.name == this.state.selectedPage.name) return;
 
     // Save the existing page, then load the new one.
     this.save().then(() => {

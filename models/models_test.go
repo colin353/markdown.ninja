@@ -2,6 +2,7 @@ package models
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/colin353/portfolio/config"
@@ -10,6 +11,12 @@ import (
 func init() {
 	AppConfig = config.LoadConfig("../config")
 	Connect()
+
+	// A quirk of the test running software is that it is running
+	// in the CWD. The configuration files always reference things
+	// relative to the root directory, so we need to CWD out to the
+	// parent directory before running these tests.
+	os.Chdir("../")
 
 	// Delete all file records under the domain "testdomain"
 	f := File{}

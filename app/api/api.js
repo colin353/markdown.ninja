@@ -222,7 +222,10 @@ class API {
       }
     }
 
-    request.upload.addEventListener('progress', (e: Event) => {
+    // For some reason, flow gets mad if you try to specify the type of
+    // the Event parameter in the callback here, because according to its
+    // Event definition, there is no e.loaded or e.total values.
+    request.upload.addEventListener('progress', (e: any) => {
       if(e.loaded && e.total) onProgress(100.0*e.loaded/e.total, e);
     }, false);
 

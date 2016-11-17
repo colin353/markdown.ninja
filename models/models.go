@@ -130,13 +130,13 @@ func UpdateWithChanges(m Model, changes map[string]interface{}) error {
 	}
 
 	if !m.Validate() {
-		return errors.New("Proposed model changes failed to validate.")
+		return errors.New("proposed model changes failed to validate")
 	}
 
 	// Okay, the changes are fine to apply to the database.
 	p, err := connectionPool.Get()
 	if err != nil {
-		log.Fatal("Couldn't connect to the redis database.")
+		log.Fatal("couldn't connect to the redis database")
 		return err
 	}
 
@@ -211,7 +211,7 @@ func (m *ModelList) Count() int {
 func GetList(m Model) (ModelIterator, error) {
 	p, err := connectionPool.Get()
 	if err != nil {
-		log.Fatal("Couldn't connect to the redis database.")
+		log.Fatal("couldn't connect to the redis database")
 		return nil, err
 	}
 
@@ -228,7 +228,7 @@ func GetList(m Model) (ModelIterator, error) {
 func saveOrInsert(m Model, expectKey bool) error {
 	// Ensure that the model is validated.
 	if !m.Validate() {
-		return errors.New("Model failed to validate.")
+		return errors.New("model failed to validate")
 	}
 
 	p, err := connectionPool.Get()
@@ -292,12 +292,12 @@ func LoadFromKey(m Model, key string) error {
 
 	p, err := connectionPool.Get()
 	if err != nil {
-		log.Print("Couldn't connect to the redis database.")
+		log.Print("couldn't connect to the redis database")
 		return err
 	}
 	response := p.Cmd("HGETALL", key)
 	if err != nil {
-		log.Print("Error executing redis load command (HGETALL).")
+		log.Print("error executing redis load command (HGETALL)")
 		return err
 	}
 
@@ -308,7 +308,7 @@ func LoadFromKey(m Model, key string) error {
 	}
 	// Check if there are no keys in the map: that means it doesn't exist.
 	if len(instanceMap) == 0 {
-		return fmt.Errorf("There is no such key: `%v`.", key)
+		return fmt.Errorf("there is no such key: `%v`", key)
 	}
 
 	instanceValue := reflect.ValueOf(m).Elem()

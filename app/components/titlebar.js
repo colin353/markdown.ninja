@@ -22,8 +22,8 @@ class Titlebar extends React.Component {
     menuVisible: boolean
   };
 
-  menu: React.Component;
-  gravatar: React.Component;
+  menu: PopMenu;
+  gravatar: Gravatar;
 
   constructor(props: any) {
     super(props);
