@@ -7,6 +7,8 @@ set -e
 
 echo "Testing go code..."
 go test ./models
+go test ./requesthandler
+go test
 
 echo "Vetting..."
 go vet ./models

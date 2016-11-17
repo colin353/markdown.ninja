@@ -7,9 +7,13 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/colin353/portfolio/config"
 	"github.com/colin353/portfolio/models"
 	"github.com/gorilla/sessions"
 )
+
+// AppConfig is an instance of the application config.
+var AppConfig *config.Config
 
 // A SimpleResponse is just an acknowledgement response
 // which reports if an error occurred or not.
