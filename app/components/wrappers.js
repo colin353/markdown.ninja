@@ -16,7 +16,7 @@ class Wrapper extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <Titlebar />
+        <Titlebar api={this.props.api} />
         <div style={styles.content}>
           {this.props.children}
         </div>
@@ -30,7 +30,7 @@ class FullScreenWrapper extends React.Component {
   render() {
     return (
       <div style={styles.fullscreenContainer}>
-        <Titlebar />
+        <Titlebar api={this.props.api} />
         <div style={styles.fullscreenContent}>
           {this.props.children}
         </div>

@@ -12,9 +12,13 @@ var Button = require('../components/button');
 var Debounce = require('../tools/debounce');
 
 import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
+
+type Props = {
+  api: APIInstance
+};
 
 class Signup extends React.Component {
+  props: Props;
   state: {
     name: string,
     domain: string,
@@ -29,7 +33,7 @@ class Signup extends React.Component {
 
   checkDomain_debounced: Function;
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -48,7 +52,7 @@ class Signup extends React.Component {
   }
 
   checkDomain() {
-    api.checkDomain(this.state.domain).then((available) => {
+    this.props.api.checkDomain(this.state.domain).then((available) => {
       var domainShouldBeValid = (this.state.domain.length > 0 && this.state.domain.length <= 20)
       if(available) this.setState({
         domainTaken: false,
@@ -107,7 +111,7 @@ class Signup extends React.Component {
     if(!this.validate()) return;
 
     // Now send the user information and signup.
-    api.signup({
+    this.props.api.signup({
       email: this.state.email,
       password: this.state.password,
       name: this.state.name,
@@ -115,7 +119,7 @@ class Signup extends React.Component {
     }).then((result) => {
       if(result.error) throw 'signup-failed';
       // Signup worked.
-      return api.checkAuth()
+      return this.props.api.checkAuth()
     }).then(() => {
       // Jump over to the "edit site" page.
       this.context.router.push("/edit/site");
@@ -138,7 +142,7 @@ class Signup extends React.Component {
         <p>Already have an account? <a href="#" onClick={this.context.router.push.bind(this.context.router, '/edit/login')}>Sign in.</a></p>
 
         <Input onReturn={this.signUp.bind(this)} value={this.state.name} onChange={(name) => this.setState({name})} label="name" />
-        <Input onReturn={this.signUp.bind(this)} success={this.state.validDomain?("your url: "+this.state.domain+"."+api.BASE_DOMAIN):""} error={this.state.domainError} value={this.state.domain} onChange={this.setDomain.bind(this)} label="domain" />
+        <Input onReturn={this.signUp.bind(this)} success={this.state.validDomain?("your url: "+this.state.domain+"."+this.props.api.BASE_DOMAIN):""} error={this.state.domainError} value={this.state.domain} onChange={this.setDomain.bind(this)} label="domain" />
         <Input onReturn={this.signUp.bind(this)} error={this.state.emailError} value={this.state.email} onChange={(email) => this.setState({email})} label="email" />
         <Input onReturn={this.signUp.bind(this)} error={this.state.passwordError} value={this.state.password} onChange={(password) => this.setState({password})} label="password" type="password" />
 

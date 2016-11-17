@@ -8,9 +8,6 @@
 var React = require('react');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
-import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
-
 var Tree = require('../components/tree');
 var Button = require('../components/button');
 var Editor = require('../components/editor');
@@ -19,7 +16,14 @@ var Tab = require('../components/tab');
 var Popover = require('../components/popover');
 var ConvertAbsToRelativeURL = require('../tools/relative-to-absolute');
 
+import type { APIInstance } from '../api/api';
+
+type Props = {
+  api: APIInstance
+};
+
 class Edit extends React.Component {
+  props: Props;
   state: {
     markdown: string,
     html: string,
@@ -83,13 +87,13 @@ class Edit extends React.Component {
       this.setState({files});
     })
 
-    api.addListener("ctrl+s", "editor", () => {
+    this.props.api.addListener("ctrl+s", "editor", () => {
       this.save();
     });
   }
 
   getFiles() {
-    return api.files().then((files) => {
+    return this.props.api.files().then((files) => {
       // Sort the list alphabetically.
       return files.sort((a, b) => {
         return b.name.localeCompare(a.name);
@@ -99,7 +103,7 @@ class Edit extends React.Component {
 
   getPages() {
     // Load the list of pages for this site.
-    return api.pages().then((pages) => {
+    return this.props.api.pages().then((pages) => {
       // Two actions: sort the list alphabetically, and then make sure that
       // index.md shows up first.
       return pages.sort((a, b) => {
@@ -114,7 +118,7 @@ class Edit extends React.Component {
   save() {
     this.state.selectedPage.markdown = this.state.markdown;
     this.state.selectedPage.html = this.state.html;
-    return api.editPage(this.state.selectedPage).then(() => {
+    return this.props.api.editPage(this.state.selectedPage).then(() => {
       this.setState({unsavedChanges: false});
     });
   }
@@ -154,7 +158,7 @@ class Edit extends React.Component {
 
     // Save the existing page, then load the new one.
     this.save().then(() => {
-      return api.getPage(page.name);
+      return this.props.api.getPage(page.name);
     }).then((page) => {
       this.setState({
         markdown: page.markdown,
@@ -201,7 +205,7 @@ class Edit extends React.Component {
     // If they hit the enter key, we'll change the name.
     var newName = this.state.renameValue;
     if(e.key == "Enter" && this.state.renameType == 'page') {
-      api.renamePage(this.state.contextPage.name, newName).then(() => {
+      this.props.api.renamePage(this.state.contextPage.name, newName).then(() => {
         this.setState({showRenamePopover: false});
         return this.getPages();
       }).then((pages) => {
@@ -213,7 +217,7 @@ class Edit extends React.Component {
         this.setState({pages, selectedPage: this.state.selectedPage});
       });
     } else if(e.key == "Enter" && this.state.renameType == 'file') {
-      api.renameFile(this.state.contextFile.name, newName).then(() => {
+      this.props.api.renameFile(this.state.contextFile.name, newName).then(() => {
         this.setState({showRenamePopover: false});
         return this.getFiles();
       }).then((files) => {
@@ -229,7 +233,7 @@ class Edit extends React.Component {
   }
 
   deletePage(page: Page) {
-    api.deletePage(page).then(() => {
+    this.props.api.deletePage(page).then(() => {
       this.setState({showDeletePagePopover: false});
       return this.getPages();
     }).then((pages) => {
@@ -244,7 +248,7 @@ class Edit extends React.Component {
   }
 
   deleteFile(file: File) {
-    api.deleteFile(file.name).then(() => {
+    this.props.api.deleteFile(file.name).then(() => {
       return this.getFiles();
     }).then((files) => {
       this.setState({files, showDeleteFilePopover: false});
@@ -253,7 +257,7 @@ class Edit extends React.Component {
 
   addNewPage() {
     var page: Page;
-    api.createPage({markdown: "", html: ""}).then((p) => {
+    this.props.api.createPage({markdown: "", html: ""}).then((p) => {
       page = p;
       return this.getPages();
     }).then((pages) => {
@@ -262,7 +266,7 @@ class Edit extends React.Component {
   }
 
   uploadFile() {
-    api.uploadFile("file.txt", this.fileInput.files[0], () => {}).then(() => {
+    this.props.api.uploadFile("file.txt", this.fileInput.files[0], () => {}).then(() => {
       return this.getFiles();
     }).then((files) => {
       this.setState({files, showUploadPopover: false});
@@ -277,6 +281,7 @@ class Edit extends React.Component {
     return (
       <div style={styles.container}>
         <Tree
+          api={this.props.api}
           onAddNewPage={this.addNewPage.bind(this)}
           onUploadFile={this.clickUploadFile.bind(this)}
           clickPage={this.clickPage.bind(this)}
@@ -313,6 +318,7 @@ class Edit extends React.Component {
         </ContextMenu>
 
         <Popover
+          api={this.props.api}
           onFocus={() => { this.renameInput.focus(); this.renameInput.setSelectionRange(0, this.state.renameValue.length-3); }}
           visible={this.state.showRenamePopover}
           onDismiss={() => this.setState({showRenamePopover: false})}
@@ -329,6 +335,7 @@ class Edit extends React.Component {
         </Popover>
 
         <Popover
+          api={this.props.api}
           visible={this.state.showDeletePagePopover||this.state.showDeleteFilePopover}
           onDismiss={() => this.setState({showDeleteFilePopover: false, showDeletePagePopover: false})}
         >
@@ -342,6 +349,7 @@ class Edit extends React.Component {
         </Popover>
 
         <Popover
+          api={this.props.api}
           visible={this.state.showUploadPopover}
           onDismiss={() => this.setState({showUploadPopover: false})}
         >

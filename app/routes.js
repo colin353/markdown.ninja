@@ -16,8 +16,21 @@ var IndexRoute = ReactRouter.IndexRoute;
 var { Wrapper, FullScreenWrapper } = require('./components/wrappers');
 var AuthenticationWrapper = require('./components/authenticationwrapper');
 
+var API = require('./api/api');
+var api = new API.api();
+
+// Add the api to the window object, so debugging is a bit
+// easier.
+window.api = api;
+api.checkAuth();
+
+// This is necessary to pass the api prop down to children.
+const useExtraProps = {
+  renderRouteComponent: child => React.cloneElement(child, {api})
+};
+
 var routes = (
-  <Router history={ReactRouter.browserHistory}>
+  <Router render={ReactRouter.applyRouterMiddleware(useExtraProps)} history={ReactRouter.browserHistory}>
 
     <Route path='/edit/site' component={FullScreenWrapper}>
       <Route component={AuthenticationWrapper}>

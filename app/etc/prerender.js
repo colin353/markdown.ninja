@@ -13,8 +13,8 @@ var api = new API.api();
 for(var route in routes) {
   var Component = require('../pages/' + routes[route].component);
   var output = ReactDOMServer.renderToStaticMarkup(
-    <Wrapper>
-      <Component />
+    <Wrapper api={api}>
+      <Component api={api} />
     </Wrapper>
   );
   console.log(output);

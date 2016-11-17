@@ -9,9 +9,9 @@
 var React = require('react');
 
 import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
 
 type Props = {
+  api: APIInstance,
   visible: boolean,
   onDismiss: Function,
   onFocus: Function,
@@ -20,15 +20,15 @@ type Props = {
 
 class Popover extends React.Component {
   props: Props;
-  static defaultProps: Props;
+  static defaultProps: any;
 
   componentDidMount() {
-    api.addListener("escapeKeyPressed", "popover", () => {
+    this.props.api.addListener("escapeKeyPressed", "popover", () => {
       this.props.onDismiss();
     })
   }
   componentWillUnmount() {
-    api.removeListeners("popover");
+    this.props.api.removeListeners("popover");
   }
   componentWillReceiveProps(newprops: Props) {
     if(newprops.visible && !this.props.visible) {

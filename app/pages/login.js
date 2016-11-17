@@ -11,16 +11,21 @@ var Input = require('../components/input');
 var Button = require('../components/button');
 
 import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
+
+type Props = {
+  api: APIInstance
+};
 
 class Login extends React.Component {
+  props: Props;
+
   state: {
     domain: string,
     password: string,
     passwordError: string
   };
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -35,7 +40,7 @@ class Login extends React.Component {
     this.setState({passwordError: ''});
 
     // Try to log in.
-    api.login(this.state.domain, this.state.password).then(() => {
+    this.props.api.login(this.state.domain, this.state.password).then(() => {
       // Login must be successful if we reached this point.
       // Now we'll route to the edit site page.
       this.context.router.push('/edit/site');

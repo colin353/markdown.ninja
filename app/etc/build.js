@@ -28,5 +28,3 @@ glob("../web/default/*.md", {}, (err, files) => {
     })
   }
 });
-
-// Prerender react components to their respective locations.

@@ -8,14 +8,16 @@
 
 var React = require('react');
 
-import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
-
 var Button = require('./button');
 
-type Props = {};
+import type { APIInstance } from '../api/api';
+
+type Props = {
+  api: APIInstance
+};
 
 class PopMenu extends React.Component {
+  props: Props;
   state: {
     domain: string
   };
@@ -23,22 +25,22 @@ class PopMenu extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      domain: api.user?api.user.domain:""
+      domain: this.props.api.user?this.props.api.user.domain:""
     };
   }
   componentDidMount() {
-    api.addListener("authenticationStateChanged", "popmenu", () => {
+    this.props.api.addListener("authenticationStateChanged", "popmenu", () => {
       this.setState({
-        domain: api.user?api.user.domain:""
+        domain: this.props.api.user?this.props.api.user.domain:""
       });
     });
   }
   componentWillUnmount() {
-    api.removeListeners("popmenu");
+    this.props.api.removeListeners("popmenu");
   }
 
   logout() {
-    api.logout().then(() => {
+    this.props.api.logout().then(() => {
       this.context.router.push('/edit/login');
     });
   }
@@ -50,7 +52,7 @@ class PopMenu extends React.Component {
   // When the user clicks on their domain, we'll open it for them
   // in a new tab.
   clickDomain() {
-    window.open(window.location.protocol + "//" + this.state.domain + "." + api.BASE_DOMAIN, '_blank');
+    window.open(window.location.protocol + "//" + this.state.domain + "." + this.props.api.BASE_DOMAIN, '_blank');
   }
 
   render() {
@@ -59,7 +61,7 @@ class PopMenu extends React.Component {
         <div style={styles.arrow}></div>
         <div onClick={this.clickDomain.bind(this)} style={styles.domain}>
           <span style={styles.subdomain}>{this.state.domain}</span>
-          <span>{"." + api.BASE_DOMAIN}</span>
+          <span>{"." + this.props.api.BASE_DOMAIN}</span>
         </div>
         <div style={styles.buttonlist}>
           <Button color='red' onClick={this.clickEditSite.bind(this)} action="edit my site" />

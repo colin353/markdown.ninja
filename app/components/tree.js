@@ -8,14 +8,14 @@
 var React = require('react');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
-import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
-
 var Icon = require('./icon');
 var Button = require('./button');
 var Ellipsis = require('../tools/overflow-ellipsis')
 
+import type { APIInstance } from '../api/api';
+
 type Props = {
+  api: APIInstance,
   pages: Page[],
   files: File[],
   clickPage: (p: Page) => void,
@@ -32,16 +32,16 @@ class Tree extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      domain: api.user?api.user.domain:''
+      domain: this.props.api.user?this.props.api.user.domain:''
     };
   }
   componentDidMount() {
-    api.addListener("authenticationStateChanged", "tree", () => {
-      this.setState({ domain: api.user.domain });
+    this.props.api.addListener("authenticationStateChanged", "tree", () => {
+      this.setState({ domain: this.props.api.user.domain });
     });
   }
   componentWillUnmount() {
-    api.removeListeners("tree");
+    this.props.api.removeListeners("tree");
   }
   handleClick() {
 
@@ -55,7 +55,7 @@ class Tree extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <div style={styles.rootRow}><Icon name="book" /> {this.state.domain}.{api.BASE_DOMAIN}</div>
+        <div style={styles.rootRow}><Icon name="book" /> {this.state.domain}.{this.props.api.BASE_DOMAIN}</div>
         {this.props.pages.map((p) => {
           return (
             <ContextMenuTrigger collect={this.collect.bind(this, p)} key={p.name} id="page">

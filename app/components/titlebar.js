@@ -8,12 +8,15 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-import type { APIInstance } from '../api/api';
-declare var api: APIInstance;
-
 var Button = require('./button');
 var Gravatar = require('./gravatar');
 var PopMenu = require('./popmenu');
+
+import type { APIInstance } from '../api/api';
+
+type Props = {
+  api: APIInstance
+};
 
 class Titlebar extends React.Component {
   state: {
@@ -29,16 +32,16 @@ class Titlebar extends React.Component {
     super(props);
 
     this.state = {
-      loggedIn   : api.authenticated,
+      loggedIn   : this.props.api.authenticated,
       email      : "test@fake_email_address.com",
       menuVisible: false
     };
   }
   componentDidMount() {
-    api.addListener("authenticationStateChanged", "titlebar", () => {
+    this.props.api.addListener("authenticationStateChanged", "titlebar", () => {
       this.setState({
-        email   : api.user?api.user.email:"",
-        loggedIn: api.authenticated
+        email   : this.props.api.user?this.props.api.user.email:"",
+        loggedIn: this.props.api.authenticated
       });
     });
 
@@ -48,7 +51,7 @@ class Titlebar extends React.Component {
     // let the gravatar handle closing the menu (otherwise you'll get a close -> open)
     // as both handlers run. So we must detect the area of the click and only close
     // the menu if we are clicking away from both the menu itself and the gravatar.
-    api.addListener("clickBody", "titlebar", (e) => {
+    this.props.api.addListener("clickBody", "titlebar", (e) => {
       if(!this.gravatar) return;
 
       var isClickingMenu = false;
@@ -64,7 +67,7 @@ class Titlebar extends React.Component {
     });
   }
   componentWillUnmount() {
-    api.removeListeners("titlebar");
+    this.props.api.removeListeners("titlebar");
   }
   toggleMenu() {
     this.setState({
@@ -81,7 +84,7 @@ class Titlebar extends React.Component {
             <Gravatar ref={(g) => this.gravatar = g} onClick={this.toggleMenu.bind(this)} email={this.state.email} />
             <div style={{position: 'relative'}}>
               {this.state.menuVisible?(
-                  <PopMenu ref={(m) => this.menu = m}  />
+                  <PopMenu api={this.props.api} ref={(m) => this.menu = m}  />
               ):[]}
             </div>
           </div>
