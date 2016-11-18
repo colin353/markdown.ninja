@@ -21,11 +21,11 @@ test:
     # Build all the binaries.
     - ./etc/build.sh
     # Build the docker image.
-    - docker build -t colinmerkel/portfolio:$CIRCLE_SHA1 .
+    - docker build --rm=false -t colinmerkel/portfolio:$CIRCLE_SHA1 .
     # Start the docker image on the host.
-    - docker run -d --net=host colinmerkel/portfolio:$CIRCLE_SHA1
+    - IMAGEPID=`docker run -d --net=host colinmerkel/portfolio:$CIRCLE_SHA1`
     # Presumably we run our integration tests here.
-    - echo TEST
+    - echo $IMAGEPID
     # Stop the server. This is necessary because if the server crashed,
     # this will return a nonzero exit code and fail the test.
-    - docker stop colinmerkel/portfolio:$CIRCLE_SHA1
+    - docker stop $IMAGEPID
