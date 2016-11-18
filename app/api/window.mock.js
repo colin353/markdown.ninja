@@ -1,6 +1,8 @@
 /*
-  cookies.mock.js
-  @flow
+  window.mock.js
+
+  This function is NOT tracked by flow, because it violates some flow
+  rules in order to enable the correct use of the `window` object.
 
   This function mocks the Cookies object, which exists on the browser
   but not in the test environment.
@@ -22,6 +24,22 @@ function transformWindow(w: any) {
   // Set the test URLs up.
   w.ORIGIN = "http://localhost:8080";
   w.HOST = "localhost";
+
+  return w;
 }
 
-module.exports = transformWindow;
+// This function returns the window object. If we're running on the browser,
+// it'll return the browser's window object, otherwise it'll return a mock
+// object that kind of works (for testing and prerendering on server side.)
+function getWindowObject() {
+  if(typeof window == "undefined") {
+    return transformWindow({});
+  } else {
+    return window;
+  }
+}
+
+module.exports = {
+  transformWindow,
+  getWindowObject
+};

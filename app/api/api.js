@@ -8,13 +8,11 @@
 // If we are running a prerender script or a test, the window
 // object may not be defined. In that case, we'll create a dummy
 // object so that we don't cause all kinds of undefined errors.
-var transformWindow = require('./window.mock');
+var { transformWindow, getWindowObject } = require('./window.mock');
 
-if(typeof window == "undefined") {
-  window = {};
-  transformWindow(window);
-}
-else if(window.hasOwnProperty("jasmine")) {
+var window = getWindowObject();
+
+if(window.hasOwnProperty("jasmine")) {
   transformWindow(window);
 }
 
