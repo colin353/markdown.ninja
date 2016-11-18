@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: portfolio
+  labels:
+    app: portfolio
+spec:
+  replicas: 3
+  selector:
+    app: portfolio
+  template:
+    metadata:
+      name: portfolio
+      labels:
+        app: portfolio
+    spec:
+      containers:
+        - name: portfolio
+          image: colinmerkel/portfolio:a3c97aa1265e78742c2b3b053eafea7c1cfeec5b
+          env:
+            - name: APPCONFIG_REDISURL
+              value: redis.default:6379
+            - name: APPCONFIG_PORT
+              value: "80"
+            - name: APPCONFIG_HOSTNAMES
+              value: 104.196.107.26
+          ports:
+            - name: portfolio
+              containerPort: 80
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst

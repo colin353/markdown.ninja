@@ -9,8 +9,11 @@ The web server is written in Go, and the frontend uses React.
 
 ## To do list
 
-  - Write jest tests which actually require the server to be on
-  - Prerender react --> HTML during the build step for public facing pages
+  - Get an actual domain name
+  - Figure out how to run redis in a cluster configuration (?)
+  - Add a persistent drive for file storage and another for redis persistence
+
+  - Write more jest tests that exercise the api.js functions
 
   - Fix up the color scheme for the editor.
 
