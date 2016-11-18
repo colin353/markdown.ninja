@@ -6,14 +6,14 @@
 */
 
 declare class CookiesObject {
-  get(s: string, d?: any) {}
-  set(s: string) {}
-  remove(s: string) {}
+  get(s: string, d?: any) : void;
+  set(s: string) : void;
+  remove(s: string) : void
 }
 
 declare class Window {
   api: any,
-  Cookies: CookiesObject,
+  Cookies: any,
   document: any,
   location: any,
   _reactRoot: any,
@@ -24,7 +24,9 @@ declare class Window {
   open: (url: string) => void,
   innerWidth: number,
   innerHeight: number,
-  fetch: Function
+  fetch: Function,
+  ORIGIN: string,
+  HOST: string
 };
 
 type UploadEvent = {

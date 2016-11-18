@@ -54,9 +54,9 @@ describe("sign up with a new account", () => {
       expect(api.user.domain).toBe("testdomain");
       // Make sure we don't accidlentally get some weird fields
       // that shouldn't be there.
-      expect(api.user.password).toBeUndefined();
-      expect(api.user.password_hash).toBeUndefined();
-      expect(api.user.password_salt).toBeUndefined();
+      expect(api.user.hasOwnProperty("password")).toBe(false);
+      expect(api.user.hasOwnProperty("password_hash")).toBe(false);
+      expect(api.user.hasOwnProperty("password_salt")).toBe(false);
     });
 
   });

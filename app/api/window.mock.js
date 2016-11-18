@@ -13,7 +13,7 @@ class CookiesObject {
 }
 
 // Add all necessary mock properties to the window object.
-function transformWindow(w: Window) {
+function transformWindow(w: any) {
   if(typeof w == "undefined") w = {};
   w.Cookies = new CookiesObject();
   w.document = {};

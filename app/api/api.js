@@ -11,10 +11,10 @@
 var transformWindow = require('./window.mock');
 
 if(typeof window == "undefined") {
-  var window = {};
+  window = {};
   transformWindow(window);
 }
-if(window.hasOwnProperty("jasmine")) {
+else if(window.hasOwnProperty("jasmine")) {
   transformWindow(window);
 }
 
