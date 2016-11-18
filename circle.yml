@@ -16,7 +16,7 @@ dependencies:
     - go install github.com/golang/lint/golint
     # Move to the $GOPATH directory.
     - mkdir -p ~/.go_workspace/src/github.com/colin353
-    - cd ~/.go_workspace/github.com/colin353
+    - cd ~/.go_workspace/src/github.com/colin353
     # Delete any old, cached version of the code, if it exists.
     - rm -rf portfolio || true
     # Copy the codebase into this directory.
