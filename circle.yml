@@ -9,10 +9,9 @@ dependencies:
     - "app/node_modules"
   override:
     # Install NPM requirements
-    - cd app && npm install --dev
-    # Refresh the cache.
-    - rm -rf ~/node_modules
-    - mv admin/node_modules ~/
+    - cd app && npm install
+    # Install golang dependencies
+    - go get -t -d -v ./...
 test:
   override:
     # Check lint, flow, etc.
