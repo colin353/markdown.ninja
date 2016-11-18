@@ -1,12 +1,13 @@
 machine:
+  node:
+    version: v6.1.0
   services:
     - redis
+
 dependencies:
   cache_directories:
-    - "~/node_modules"
+    - "app/node_modules"
   override:
-    # Restore the cache, if it exists.
-    - etc/circle_restore_cache.sh
     # Install NPM requirements
     - cd app && npm install --dev
     # Refresh the cache.
