@@ -14,7 +14,7 @@ echo "Vetting..."
 go vet ./models
 
 echo "Linting..."
-$GOPATH/bin/golint --set_exit_status ./models
+golint --set_exit_status ./models
 
 echo "Formatting..."
 gofmt -w ./
