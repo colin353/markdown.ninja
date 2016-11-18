@@ -12,6 +12,7 @@ dependencies:
     - cd app && npm install
     # Install golang dependencies
     - go get -t -d -v ./...
+    - go get -u github.com/golang/lint/golint
 test:
   override:
     # Check lint, flow, etc.
