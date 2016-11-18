@@ -9,6 +9,7 @@ import (
 
 	"github.com/colin353/portfolio/config"
 	"github.com/mediocregopher/radix.v2/pool"
+	"github.com/mediocregopher/radix.v2/redis"
 )
 
 // AppConfig is an instance of the application config.
@@ -38,6 +39,26 @@ type ModelIterator interface {
 
 var connectionPool *pool.Pool
 
+// This function gets and returns a redis client object. If we are
+// currently in test mode, we'll make sure to select the test database,
+// which is redis database 1. Otherwise, we're in production, so we'll
+// use the permanent database 0 (default).
+func getRedisConnection() (*redis.Client, error) {
+	p, err := connectionPool.Get()
+	if err != nil {
+		return nil, err
+	}
+	if AppConfig.Mode == "test" || AppConfig.Mode == "testing" {
+		response := p.Cmd("SELECT", 1)
+		if response.Err != nil {
+			log.Fatalf("Unable to select testing database: %v", response.Err.Error())
+			return nil, response.Err
+		}
+	}
+
+	return p, err
+}
+
 // Connect to the redis database and create a connection pool, which can be used
 // to query the redis database concurrently.
 func Connect() {
@@ -48,12 +69,30 @@ func Connect() {
 	}
 }
 
+// ClearDatabase deletes all the keys in the database. As a precautionary
+// measure, it also selects database 1, which is designated as the testing
+// database.
+func ClearDatabase() {
+	p, err := getRedisConnection()
+	if err != nil {
+		log.Fatal("Couldn't connect to the redis database.")
+	}
+	response := p.Cmd("SELECT", 1)
+	if response.Err != nil {
+		log.Fatal("Unable to select testing database, terminating.")
+	}
+
+	// Clear all keys in the database. This command cannot fail,
+	// according to redis docs.
+	p.Cmd("FLUSHDB")
+}
+
 // MakeKeyForTable creates a unique key for a table by using the redis INCR
 // command on the key:tablename field. If you aren't sure what key to give
 // a new object, use MakeKeyForTable and give a string for the table name,
 // and you'll be guaranteed a unique key.
 func MakeKeyForTable(table string) string {
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 	}
@@ -88,7 +127,7 @@ func setFieldWithRedisString(v *reflect.Value, value string) {
 
 // Delete removes a model from the database.
 func Delete(m Model) error {
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 		return err
@@ -134,7 +173,7 @@ func UpdateWithChanges(m Model, changes map[string]interface{}) error {
 	}
 
 	// Okay, the changes are fine to apply to the database.
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("couldn't connect to the redis database")
 		return err
@@ -160,7 +199,7 @@ func Insert(m Model) error {
 	}
 
 	// Now, register the RegistrationKey into the registration set.
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 		return err
@@ -209,7 +248,7 @@ func (m *ModelList) Count() int {
 // Actually it returns a ModelIterator, which you can call "Next()" on
 // any number of times.
 func GetList(m Model) (ModelIterator, error) {
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("couldn't connect to the redis database")
 		return nil, err
@@ -231,7 +270,7 @@ func saveOrInsert(m Model, expectKey bool) error {
 		return errors.New("model failed to validate")
 	}
 
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 		return err
@@ -290,7 +329,7 @@ func Load(m Model) error {
 func LoadFromKey(m Model, key string) error {
 	m.MakeDefault()
 
-	p, err := connectionPool.Get()
+	p, err := getRedisConnection()
 	if err != nil {
 		log.Print("couldn't connect to the redis database")
 		return err

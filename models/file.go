@@ -76,7 +76,7 @@ func (f *File) SetNameSafely(name string) {
 // file, because the file name defines the key, which is required in lookups. So you can't
 // just load the record, change the name, and save it.
 func (f *File) RenameFile(newName string) error {
-	pool, err := connectionPool.Get()
+	pool, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 		return err

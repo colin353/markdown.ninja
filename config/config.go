@@ -22,6 +22,7 @@ var EnvPrefix = "APPCONFIG_"
 // Config is a struct which contains all of the configuration for
 // the app.
 type Config struct {
+	Mode          string
 	Port          string
 	RedisURL      string
 	DataDirectory string

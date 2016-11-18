@@ -76,7 +76,7 @@ func (p *Page) Validate() bool {
 // for the page. This function finds a unique key (or returns err if it can't
 // do that in a reasonable time) and attaches it to the page.
 func (p *Page) GenerateName() error {
-	pool, err := connectionPool.Get()
+	pool, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 	}
@@ -101,7 +101,7 @@ func (p *Page) GenerateName() error {
 // RenamePage takes an existing page and rename it. It's a bit tricky to rename the
 // page, because the page create sthe key, which prevents lookups.
 func (p *Page) RenamePage(newName string) error {
-	pool, err := connectionPool.Get()
+	pool, err := getRedisConnection()
 	if err != nil {
 		log.Fatal("Couldn't connect to the redis database.")
 		return err

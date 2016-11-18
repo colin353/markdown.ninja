@@ -26,9 +26,6 @@ echo "Checking flow types..."
 echo "Checking for linter errors..."
 ./app/node_modules/.bin/eslint -c app/.eslint.json app/main.js
 
-echo "Running jest..."
-cd app/ && npm run test
-
 echo
 echo
 echo "         ------------"

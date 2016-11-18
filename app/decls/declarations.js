@@ -5,13 +5,15 @@
   A place to put global flow declarations.
 */
 
+declare class CookiesObject {
+  get(s: string, d?: any) {}
+  set(s: string) {}
+  remove(s: string) {}
+}
+
 declare class Window {
   api: any,
-  Cookies: {
-    get: Function,
-    set: Function,
-    remove: Function
-  },
+  Cookies: CookiesObject,
   document: any,
   location: any,
   _reactRoot: any,
@@ -21,7 +23,8 @@ declare class Window {
   addEventListener: Function,
   open: (url: string) => void,
   innerWidth: number,
-  innerHeight: number
+  innerHeight: number,
+  fetch: Function
 };
 
 type UploadEvent = {

@@ -8,10 +8,15 @@
 #      APPCONFIG_ and in uppercase, for example,
 #      APPCONFIG_REDISURL.
 
+# Mode: set this parameter to "test" for testing,
+# and "production" otherwise. If started in test mode,
+# we will switch to redis database 1, and delete all
+# the contents of that database.
+mode: production
+
 # Port: this is the port that the webserver will
 # run on.
 port: 8080
-
 
 # Hostnames: a list of names which can be used as
 # hostnames. The first entry is the default hostname.

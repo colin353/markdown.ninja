@@ -10,9 +10,5 @@
   "/edit/signup": {
     "file": "signup.html",
     "component": "signup"
-  },
-  "/edit/site": {
-    "file": "edit.html",
-    "component": "edit"
   }
 }

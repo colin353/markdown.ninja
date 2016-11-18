@@ -14,3 +14,9 @@ declare type Page = {
 declare type File = {
   name: string
 }
+
+type User = {
+  name: string,
+  domain: string,
+  email: string
+}

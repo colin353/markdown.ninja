@@ -5,23 +5,22 @@
   This file defines the interface for communicating with the webserver.
 */
 
-type User = {
-  name: string,
-  phone_number: string,
-  domain: string,
-  email: string
-}
-
 // If we are running a prerender script or a test, the window
 // object may not be defined. In that case, we'll create a dummy
 // object so that we don't cause all kinds of undefined errors.
-if(typeof window == 'undefined')
-  window = {
-    location: { origin: '', host: ''},
-    Cookies: { set: () => {}, get: () => {}, remove: () => {} },
-    document: {},
-    addEventListener: () => {}
-  };
+var transformWindow = require('./window.mock');
+
+if(typeof window == "undefined") {
+  var window = {};
+  transformWindow(window);
+}
+if(window.hasOwnProperty("jasmine")) {
+  transformWindow(window);
+}
+
+// Since fetch is only defined on the window, we need a polyfill
+// for no de.js in case we are running this file as a test.
+var fetch = require('isomorphic-fetch');
 
 class API {
   BASE_URL: string;
@@ -41,15 +40,13 @@ class API {
 
     // The base URL is stored here so that UI components can
     // get access to it via window.api.BASE_URL.
-    if(window) {
-      this.BASE_URL = window.location.origin;
-      this.BASE_DOMAIN = window.location.host;
-    }
+    this.BASE_URL = window.ORIGIN || window.location.origin;
+    this.BASE_DOMAIN = window.HOST || window.location.host;
 
     // Check the cookies for a quick sense of whether
     // we are currently logged in.
     this.authenticated = false;
-    if(window.Cookies && window.Cookies.get("authenticated"))
+    if(window.Cookies.get("authenticated"))
       this.authenticated = true;
 
     // Detect the escape key, which is used for quitting dialogs
@@ -81,12 +78,14 @@ class API {
   // and sends them as a POST request.
   request(uri: string, params: any) {
     var request_url = this.BASE_URL + uri;
+    var response;
     return fetch(request_url, {
         'headers'     : {'Content-Type': 'application/json'},
         'credentials' : 'include',
         'method'      : 'POST',
         'body'        : JSON.stringify(params)
     }).then((r) => {
+        response = r;
         if(r.status != 200) return r.json().then((z) => { throw z;});
         else return r.json();
     });
@@ -94,6 +93,8 @@ class API {
 
   setAuthenticationState(state: boolean) {
     this.authenticated = state;
+    // Set a cookie so we can guess the authentication state
+    // next time without checking.
     if(state)
       window.Cookies.set("authenticated", true);
     else window.Cookies.remove("authenticated");
