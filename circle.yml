@@ -5,7 +5,7 @@ machine:
     - redis
     - docker
   environment:
-    PROJECT_NAME: Portfolio
+    PROJECT_NAME: dynamic-sanctum-378
     CLUSTER_NAME: portfolio
     CLOUDSDK_COMPUTE_ZONE: us-east1-d
 
