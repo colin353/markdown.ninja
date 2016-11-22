@@ -4,11 +4,26 @@ machine:
   services:
     - redis
     - docker
+  environment:
+    PROJECT_NAME: Portfolio
+    CLUSTER_NAME: portfolio
+    CLOUDSDK_COMPUTE_ZONE: us-east1-d
 
 dependencies:
   cache_directories:
     - "app/node_modules"
+    - "~/kubernetes"
   override:
+    # Install kubernetes if necessary.
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
+    # Create the authentication file, and use it to log into the cluster.
+    - echo $KUBE_AUTH | base64 --decode -i > ${HOME}/account-auth.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
+    - sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
     # Install NPM requirements
     - cd app && npm install
     # Install golang dependencies

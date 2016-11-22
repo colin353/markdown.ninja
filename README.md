@@ -9,6 +9,7 @@ The web server is written in Go, and the frontend uses React.
 
 ## To do list
 
+  - Make pushes to docker hub auto-initiate a kubernetes deployment
   - Get an actual domain name
   - Figure out how to run redis in a cluster configuration (?)
   - Add a persistent drive for file storage and another for redis persistence

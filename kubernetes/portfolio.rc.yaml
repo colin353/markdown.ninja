@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: portfolio
-          image: colinmerkel/portfolio:a3c97aa1265e78742c2b3b053eafea7c1cfeec5b
+          image: colinmerkel/portfolio:${CIRCLE_SHA1}
           env:
             - name: APPCONFIG_REDISURL
               value: redis.default:6379
