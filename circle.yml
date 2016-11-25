@@ -19,6 +19,8 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
     # Create the authentication file, and use it to log into the cluster.
     - echo $KUBE_AUTH | base64 --decode -i > ${HOME}/account-auth.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=~/account-auth.json
+    - sudo chmod 777 /home/ubuntu/.kube/config 
     - sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
     - sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
