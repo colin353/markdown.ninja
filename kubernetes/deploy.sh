@@ -3,6 +3,8 @@
 # Exit on any error
 set -e
 
+sudo chmod 777 /home/ubuntu/.kube/config
+
 # Update Kubernetes replicationController
 envsubst < kubernetes/portfolio.rc.yaml | kubectl create -f -
 
