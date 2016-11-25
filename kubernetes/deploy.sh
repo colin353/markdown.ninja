@@ -12,4 +12,4 @@ export GOOGLE_APPLICATION_CREDENTIALS=~/account-auth.json
 sudo chmod -R 777 /home/ubuntu/.kube
 
 # Roll over Kubernetes pods
-kubectl rolling-update --image=colinmerkel/portfolio:${CIRCLE_SHA1}
+kubectl rolling-update portfolio --image=colinmerkel/portfolio:${CIRCLE_SHA1}
