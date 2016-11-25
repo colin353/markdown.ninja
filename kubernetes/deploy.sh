@@ -11,4 +11,4 @@ sudo chmod -R 777 /home/ubuntu/.kube
 envsubst < kubernetes/portfolio.rc.yaml | kubectl create -f -
 
 # Roll over Kubernetes pods
-kubectl rolling-update portfolio
+kubectl rolling-update portfolio-$CIRCLE_SHA1
