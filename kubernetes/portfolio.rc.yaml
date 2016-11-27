@@ -23,10 +23,23 @@ spec:
             - name: APPCONFIG_PORT
               value: "80"
             - name: APPCONFIG_HOSTNAMES
-              value: 104.196.107.26
+              value: portfolio.io
+            - name: APPCONFIG_DATADIRECTORY
+              value: /mnt/data
           ports:
             - name: portfolio
               containerPort: 80
+          volumeMounts:
+            - mountPath: /mnt/data
+              name: media
+          nodeSelector:
+              node-type: redis
+      volumes:
+        - name: media
+          glusterfs:
+            endpoints: gluster
+            path: media
+            readOnly: false
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst

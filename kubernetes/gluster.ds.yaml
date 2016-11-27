@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: gluster
+spec:
+  template:
+    metadata:
+      labels:
+        app: gluster
+    spec:
+      containers:
+        - name: gluster
+          image: gluster/gluster-centos
+          ports:
+            - name: gluster
+              containerPort: 24007
+            - name: gluster02
+              containerPort: 24008
+            - name: gluster03
+              containerPort: 49152
+          volumeMounts:
+              - name: brickpath
+                mountPath: "/mnt/brick1"
+          securityContext:
+           capabilities: {}
+           privileged: true
+      volumes:
+        - name: brickpath
+          hostPath:
+            path: "/var/mnt/brick"

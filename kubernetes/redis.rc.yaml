@@ -16,10 +16,19 @@ spec:
     spec:
       containers:
         - name: redis
+          command: [ "redis-server", "--appendonly", "yes" ]
           image: redis
           ports:
             - name: redis
               containerPort: 6379
+          volumeMounts:
+            - name: redisbackup
+              mountPath: "/data"
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
+      volumes:
+        - name: redisbackup
+          gcePersistentDisk:
+            pdName: redis-persistence
+            fsType: ext4

@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: portfolio
+  name: gluster
   labels:
-    app: portfolio
+    app: gluster
 spec:
-  type: LoadBalancer
+  clusterIP: None
   ports:
     # the port that this service should serve on
-  - port: 80
-    targetPort: 80
+  - port: 24007
+    targetPort: 24007
   selector:
-    app: portfolio
+    app: gluster
