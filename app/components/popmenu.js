@@ -89,7 +89,7 @@ const styles = {
     top: 10,
     width: 300,
     backgroundColor: '#c4c4c4',
-    zIndex: 10
+    zIndex: 25
   },
   domain: {
     cursor: 'default',

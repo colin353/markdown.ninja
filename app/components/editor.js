@@ -63,7 +63,8 @@ class Editor extends React.Component {
 const styles = {
   container: {
     flex: 1,
-    position: 'relative'
+    position: 'relative',
+    border: '2px solid #222',
   },
   editor: {
     fontSize: 16,

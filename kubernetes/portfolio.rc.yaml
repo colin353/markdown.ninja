@@ -23,7 +23,7 @@ spec:
             - name: APPCONFIG_PORT
               value: "80"
             - name: APPCONFIG_HOSTNAMES
-              value: portfolio.io
+              value: markdown.ninja
             - name: APPCONFIG_DATADIRECTORY
               value: /mnt/data
           ports:
@@ -32,8 +32,6 @@ spec:
           volumeMounts:
             - mountPath: /mnt/data
               name: media
-          nodeSelector:
-              node-type: redis
       volumes:
         - name: media
           glusterfs:

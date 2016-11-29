@@ -11,7 +11,7 @@ class Footer extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <p style={styles.footer}>Written by <a href="#">Colin Merkel</a>, 2016. Source code at <a href="https://github.com/colin353/portfolio">https://github.com/colin353/portfolio</a>.</p>
+        <p style={styles.footer}>Written by <a href="http://colin.markdown.ninja">Colin Merkel</a>, 2016. Source code at <a href="https://github.com/colin353/portfolio">https://github.com/colin353/portfolio</a>.</p>
       </div>
     );
   }

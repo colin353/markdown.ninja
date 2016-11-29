@@ -8,6 +8,8 @@
 var React = require('react');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
+var Dimensions = require('react-dimensions')
+
 var Showdown = require('showdown');
 var Tree = require('../components/tree');
 var Button = require('../components/button');
@@ -41,7 +43,8 @@ class Edit extends React.Component {
     contextFile: File,
     showDeletePagePopover: boolean,
     showDeleteFilePopover: boolean,
-    showUploadPopover: boolean
+    showUploadPopover: boolean,
+    style: string
   };
   renameInput: any;
   fileInput: any;
@@ -70,7 +73,8 @@ class Edit extends React.Component {
       showDeletePagePopover: false,
       showDeleteFilePopover: false,
       showUploadPopover: false,
-      renameType: 'page'
+      renameType: 'page',
+      style: 'default'
     }
 
     this.converter = new Showdown.Converter();
@@ -90,6 +94,16 @@ class Edit extends React.Component {
 
     this.props.api.addListener("ctrl+s", "editor", () => {
       this.save();
+    });
+
+    this.props.api.getStyle().then((style) => {
+      this.setState({style});
+    })
+
+    this.props.api.addListener("windowUnload", "editor", () => {
+      debugger;
+      if(this.state.unsavedChanges) return "You have unsaved changes. Are you sure you want to leave?";
+      else return undefined;
     });
   }
 
@@ -138,15 +152,25 @@ class Edit extends React.Component {
   }
 
   clickTab(tab: 'editor' | 'preview') {
-    if(tab == 'editor') {
-      // Shouldn't be able to hide the editor if there isn't
-      // anything else being displayed.
-      if(this.state.showPreview || !this.state.showEditor)
-        this.setState({showEditor: !this.state.showEditor})
-    } else if (tab == 'preview') {
-      if(!this.state.showPreview || this.state.showEditor)
-        this.setState({showPreview: !this.state.showPreview})
+    // If we are in "small display" mode, we just want to show
+    // one window at a time.
+    if(this.smallDisplay()) {
+      this.setState({
+        showEditor:  tab=='editor',
+        showPreview: tab!='editor'
+      });
+    } else {
+      if(tab == 'editor') {
+        // Shouldn't be able to hide the editor if there isn't
+        // anything else being displayed.
+        if(this.state.showPreview || !this.state.showEditor)
+          this.setState({showEditor: !this.state.showEditor})
+      } else if (tab == 'preview') {
+        if(!this.state.showPreview || this.state.showEditor)
+          this.setState({showPreview: !this.state.showPreview})
+      }
     }
+
   }
 
   clickFile(file: File) {
@@ -278,10 +302,21 @@ class Edit extends React.Component {
     this.setState({showUploadPopover: true});
   }
 
+  smallDisplay() {
+    return this.props.containerWidth<1160;
+  }
+
+  setStyle(style: string) {
+    this.props.api.setStyle(style);
+    this.setState({style});
+  }
+
   render() {
     return (
       <div style={styles.container}>
         <Tree
+          setStyle={this.setStyle.bind(this)}
+          style={this.state.style}
           api={this.props.api}
           onAddNewPage={this.addNewPage.bind(this)}
           onUploadFile={this.clickUploadFile.bind(this)}
@@ -293,14 +328,31 @@ class Edit extends React.Component {
         <div style={styles.editWindow}>
           <div style={styles.tabs}>
             <Tab onClick={this.clickTab.bind(this, 'editor')} selected={this.state.showEditor} indicator={this.state.unsavedChanges} name={this.state.selectedPage.name} />
+            {this.smallDisplay()||!this.state.showPreview||!this.state.showEditor?[]:(
+              <div style={{flex: 1, marginRight: -40}}></div>
+            )}
             <Tab onClick={this.clickTab.bind(this, 'preview')} selected={this.state.showPreview} name="preview" />
+            {this.smallDisplay()?[]:(
+              <div style={{flex: 1}}></div>
+            )}
           </div>
-          <div style={styles.window}>
-            <Editor visible={this.state.showEditor} initialText={this.state.selectedPage.markdown} onChange={this.textEdited.bind(this)} />
-            {this.state.showPreview?(
-              <Preview html={this.state.html} />
-            ):[]}
-          </div>
+          {this.smallDisplay()?(
+            <div style={styles.window}>
+              {this.state.showPreview?(
+                <Preview html={this.state.html} />
+              ):(
+                <Editor visible={this.state.showEditor} initialText={this.state.selectedPage.markdown} onChange={this.textEdited.bind(this)} />
+              )}
+            </div>
+          ):(
+            <div style={styles.window}>
+              <Editor visible={this.state.showEditor} initialText={this.state.selectedPage.markdown} onChange={this.textEdited.bind(this)} />
+              {this.state.showPreview?(
+                <Preview html={this.state.html} />
+              ):[]}
+            </div>
+          )}
+
         </div>
         <ContextMenu id="page">
           <MenuItem key="rename" onClick={this.handleClick.bind(this, "rename")}>
@@ -369,7 +421,8 @@ const styles = {
   container: {
     display: 'flex',
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
+    height: '100%'
   },
   editWindow: {
     display: 'flex',
@@ -377,9 +430,10 @@ const styles = {
     flex: 1
   },
   tabs: {
+    paddingTop: 5,
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: '#716669'
+    backgroundColor: '#272822'
   },
   window: {
     flex: 1,
@@ -388,4 +442,4 @@ const styles = {
   }
 };
 
-module.exports = Edit;
+module.exports = Dimensions()(Edit);

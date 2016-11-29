@@ -19,6 +19,8 @@ func NewEditHandler() *requesthandler.GenericRequestHandler {
 		"edit_page":   editPage,
 		"rename_page": renamePage,
 		"delete_page": deletePage,
+		"set_style":   setStyle,
+		"get_style":   getStyle,
 	}
 	return &a
 }
@@ -205,4 +207,37 @@ func deletePage(u *models.User, w http.ResponseWriter, r *http.Request) interfac
 	}
 
 	return requesthandler.ResponseOK
+}
+
+// Set the global style for that user's website.
+func setStyle(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type styleArgs struct {
+		Style string `json:"style"`
+	}
+	args := styleArgs{}
+	err := requesthandler.ParseArguments(r, &args)
+	if err != nil {
+		http.Error(w, "", http.StatusBadRequest)
+		return requesthandler.ResponseInvalidArgs
+	}
+
+	log.Printf("Set style: %s", args.Style)
+
+	u.Style = args.Style
+	err = models.Save(u)
+	if err != nil {
+		log.Printf("Failed to set style for `%s`", u.Key())
+		http.Error(w, "", http.StatusInternalServerError)
+		return requesthandler.ResponseError
+	}
+
+	return requesthandler.ResponseOK
+}
+
+// Get the style setting for this user.
+func getStyle(u *models.User, w http.ResponseWriter, r *http.Request) interface{} {
+	type styleResponse struct {
+		Style string `json:"style"`
+	}
+	return styleResponse{u.Style}
 }

@@ -46,9 +46,15 @@ const styles = {
     width: 200,
     height: 40,
     color: 'rgb(196, 196, 196)',
-    backgroundColor: '#4E4F4A',
+    backgroundColor: '#272822',
     borderTopRightRadius: 3,
-    borderTopLeftRadius: 3
+    borderTopLeftRadius: 3,
+    borderLeft: '2px solid #222',
+    borderTop: '2px solid #222',
+    borderRight: '2px solid #222',
+    position: 'relative',
+    top: 2,
+    zIndex: 5
   },
   indicator: {
     backgroundColor: '#7A89C2',
@@ -62,7 +68,7 @@ const styles = {
     top: -2
   },
   selected: {
-    backgroundColor: '#272822' // or one shade darker: 272822
+    backgroundColor: '#49483E'
   }
 }
 

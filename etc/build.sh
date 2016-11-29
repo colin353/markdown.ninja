@@ -5,6 +5,10 @@ set -e
 cd ./app/
 
 # Create the HTML renders of the markdown files.
+echo "--- Loading CSS ---"
+node etc/indexcss.js
+
+# Create the HTML renders of the markdown files.
 echo "--- Render markdown ---"
 node etc/build.js
 

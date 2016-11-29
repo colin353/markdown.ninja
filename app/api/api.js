@@ -33,7 +33,8 @@ class API {
       authenticationStateChanged: {},
       escapeKeyPressed: {},
       clickBody: {},
-      "ctrl+s": {}
+      "ctrl+s": {},
+      windowUnload: {}
     };
 
     // The base URL is stored here so that UI components can
@@ -69,6 +70,14 @@ class API {
         this.emitMessage("ctrl+s", e);
       }
       return false;
+    });
+
+    window.addEventListener('beforeunload', (e) => {
+      var confirmationMessage = this.emitMessage("windowUnload");
+      if(!confirmationMessage) return;
+
+      (e || window.event).returnValue = confirmationMessage;
+      return confirmationMessage;
     });
   }
 
@@ -124,14 +133,17 @@ class API {
     });
   }
 
-  emitMessage(message: string, data: any) {
+  emitMessage(message: string, data: any): any {
     // Don't do anything if nobody is listening to the message.
-    if(this.callbacks[message] === undefined) return;
+    if(this.callbacks[message] === undefined) return undefined;
+
+    var response = undefined;
     for (var key in this.callbacks[message]) {
       for (var i=0; i<this.callbacks[message][key].length; i++) {
-        this.callbacks[message][key][i](data);
+        response = this.callbacks[message][key][i](data);
       }
     }
+    return response;
   }
 
   addListener(message: string, key: string, callback: Function) {
@@ -198,6 +210,16 @@ class API {
 
   getFile(name: string): Promise<File> {
     return this.request("/api/files/file", {name});
+  }
+
+  setStyle(style: string) {
+    return this.request("/api/edit/set_style", {style});
+  }
+
+  getStyle(): Promise<string> {
+    return this.request("/api/edit/get_style").then((r) => {
+      return r.style;
+    });
   }
 
   uploadFile(name: string, file: any, onProgress: (progress: number, e: Event) => void) {

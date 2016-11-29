@@ -111,3 +111,7 @@ input {
     position: absolute;
     right: 7px;
 }
+
+.ace_editor {
+  font-family: 'Fira Mono' !important;
+}

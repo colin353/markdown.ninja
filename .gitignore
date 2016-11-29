@@ -8,3 +8,5 @@ data/*
 config/config.yaml
 web/default/*.md.html
 web/prerendered/*.html
+
+app/config

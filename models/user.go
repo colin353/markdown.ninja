@@ -2,11 +2,12 @@ package models
 
 import (
 	"fmt"
-	"golang.org/x/crypto/scrypt"
 	"log"
 	"math/rand"
 	"regexp"
 	"strings"
+
+	"golang.org/x/crypto/scrypt"
 )
 
 // The User struct defines a user, and stores their login data,
@@ -20,6 +21,7 @@ type User struct {
 	PhoneNumber  string `json:"phone_number"`
 	Bio          string `json:"bio"`
 	Domain       string `json:"domain"`
+	Style        string `json:"style"`
 }
 
 // Export converts a user into fields which are "safe" to export to
@@ -30,6 +32,7 @@ func (u *User) Export() map[string]interface{} {
 		"email":        u.Email,
 		"phone_number": u.PhoneNumber,
 		"domain":       u.Domain,
+		"style":        u.Style,
 	}
 }
 
@@ -45,6 +48,9 @@ func NewUser() *User {
 		b[i] = saltLetters[rand.Int63()%int64(len(saltLetters))]
 	}
 	u.PasswordSalt = string(b)
+
+	// Set the default style
+	u.Style = "default"
 
 	return u
 }

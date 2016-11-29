@@ -81,7 +81,7 @@ class Titlebar extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <span onClick={this.clickHome.bind(this)} style={styles.title} className="noselect">Portfolio</span>
+        <span onClick={this.clickHome.bind(this)} style={styles.title} className="noselect">markdown.ninja</span>
         <div style={styles.spacer}></div>
         {this.state.loggedIn?(
           <div>

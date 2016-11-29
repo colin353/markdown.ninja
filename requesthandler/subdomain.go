@@ -104,7 +104,11 @@ func renderPage(domain string, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defaultStyle, err := ioutil.ReadFile("web/css/webstyles/default.css")
+	user := models.User{}
+	user.Domain = domain
+	models.Load(&user)
+
+	defaultStyle, err := ioutil.ReadFile(fmt.Sprintf("web/css/webstyles/%s.css", user.Style))
 	if err != nil {
 		log.Println("Could not open required style file: web/css/webstyles/default.css")
 		http.Error(w, "Internal error.", http.StatusInternalServerError)
@@ -113,7 +117,7 @@ func renderPage(domain string, w http.ResponseWriter, r *http.Request) {
 
 	requiredStyle, err := ioutil.ReadFile("web/css/webstyles/required.css")
 	if err != nil {
-		log.Println("Could not open required style file: web/css/webstyles/default.css")
+		log.Println("Could not open required style file: web/css/webstyles/required.css")
 		http.Error(w, "Internal error.", http.StatusInternalServerError)
 		return
 	}
@@ -123,7 +127,7 @@ func renderPage(domain string, w http.ResponseWriter, r *http.Request) {
         %s
         %s
       </style>
-      <div class='container'>
+      <div class='md_container'>
         <div class='content'>%s</div>
       </div>
     `, requiredStyle, defaultStyle, p.HTML)))

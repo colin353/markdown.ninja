@@ -3,7 +3,7 @@ ace.define("ace/theme/custom",["require","exports","module","ace/lib/dom"], func
 exports.isDark = true;
 exports.cssClass = "ace-monokai";
 exports.cssText = ".ace-monokai .ace_gutter {\
-background: #2F3129;\
+background: #49483E;\
 color: #8F908A\
 }\
 .ace-monokai .ace_print-margin {\
@@ -11,8 +11,9 @@ width: 1px;\
 background: #555651\
 }\
 .ace-monokai {\
-background-color: #272822;\
-color: #F8F8F2\
+background-color: #49483E;\
+color: #F8F8F2;\
+font-size: 16px;\
 }\
 .ace-monokai .ace_cursor {\
 color: #F8F8F0\
@@ -31,10 +32,10 @@ margin: -1px 0 0 -1px;\
 border: 1px solid #49483E\
 }\
 .ace-monokai .ace_marker-layer .ace_active-line {\
-background: #202020\
+background: #434239\
 }\
 .ace-monokai .ace_gutter-active-line {\
-background-color: #272727\
+background-color: #434239\
 }\
 .ace-monokai .ace_marker-layer .ace_selected-word {\
 border: 1px solid #49483E\

@@ -1,12 +1,12 @@
 {
-  "name": "portfolio",
+  "name": "markdown.ninja",
   "version": "0.1.0",
   "description": "the backend for editing your personal portfolio page.",
-  "main": "portfolio",
+  "main": "markdown.ninja",
   "scripts": {
     "test": "jest",
     "dev": "bash -c ../etc/dev.sh",
-    "build": "node etc/build.js; node etc/prerender.js",
+    "build": "node etc/indexcss.js; node etc/build.js; node etc/prerender.js",
     "lint": "eslint -c ./.eslintrc.json main.js"
   },
   "repository": {
@@ -14,7 +14,7 @@
     "url": "https://github.com/colin353/portfolio"
   },
   "keywords": [
-    "portfolio"
+    "markdown.ninja"
   ],
   "author": "Colin Merkel",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-react-native": "^1.9.0",
     "babel-preset-stage-2": "^6.13.0",
+    "json-loader": "^0.5.4",
     "node-fetch": "^1.6.3",
     "react": "^15.3.0",
     "react-dimensions": "^1.3.0",
