@@ -6,10 +6,11 @@
 */
 
 var React = require('react');
+var Ellipsis = require('../tools/overflow-ellipsis');
 
 type Props = {
   selected: boolean,
-  name?: string,
+  name: string,
   onClick?: Function,
   indicator?: boolean
 }
@@ -23,7 +24,7 @@ class Tab extends React.Component {
     return (
       <div onClick={this.props.onClick} className="noselect" style={containerstyle}>
         <span>
-          {this.props.name}
+          {Ellipsis(this.props.name, 16)}
           {this.props.indicator?(
             <div style={styles.indicator}></div>
           ):[]}
@@ -33,6 +34,7 @@ class Tab extends React.Component {
   }
 }
 Tab.defaultProps = {
+  name: 'untitled.md',
   selected: false,
   indicator: false
 }
@@ -54,7 +56,7 @@ const styles = {
     borderRight: '2px solid #222',
     position: 'relative',
     top: 2,
-    zIndex: 5
+    zIndex: 3
   },
   indicator: {
     backgroundColor: '#7A89C2',

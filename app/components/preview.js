@@ -22,7 +22,7 @@ class Preview extends React.Component {
 const styles = {
   container: {
     flex: 1,
-    zIndex: 10,
+    zIndex: 4,
     boxShadow: 'inset 0px 0px 5px #000',
     paddingLeft: 20,
     paddingRight: 20,
