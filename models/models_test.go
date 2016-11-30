@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/colin353/portfolio/config"
+	"github.com/colin353/markdown.ninja/config"
 )
 
 func init() {

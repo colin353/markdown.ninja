@@ -52,15 +52,14 @@ func TestValidation(t *testing.T) {
 	if ok {
 		t.Fatal("Exported user shouldn't contain password salt.")
 	}
-
 }
 
 func TestUserCreation(t *testing.T) {
 	u := NewUser()
-	u.Name = "Colin Merkel"
+	u.Name = "Test Tester"
 	u.Domain = "testdomain"
 	u.SetPassword("gluten tag")
-	u.Email = "colin353@gmail.com"
+	u.Email = "test123@gmail.com"
 	u.MakeDefault()
 
 	Delete(u)

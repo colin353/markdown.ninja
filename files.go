@@ -16,8 +16,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/colin353/portfolio/models"
-	"github.com/colin353/portfolio/requesthandler"
+	"github.com/colin353/markdown.ninja/models"
+	"github.com/colin353/markdown.ninja/requesthandler"
 )
 
 // NewFileHandler returns an instance of the edit handler, with

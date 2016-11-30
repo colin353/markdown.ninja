@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colin353/portfolio"
+    "url": "https://github.com/colin353/markdown.ninja"
   },
   "keywords": [
     "markdown.ninja"
   ],
   "author": "Colin Merkel",
   "license": "ISC",
-  "homepage": "https://github.com/colin353/portfolio",
+  "homepage": "https://github.com/colin353/markdown.ninja",
   "dependencies": {
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",
