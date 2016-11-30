@@ -33,7 +33,7 @@ class Titlebar extends React.Component {
 
     this.state = {
       loggedIn   : this.props.api.authenticated,
-      email      : "test@fake_email_address.com",
+      email      : this.props.api.user?this.props.api.user.email:"test@fake_email_address.com",
       menuVisible: false
     };
   }
