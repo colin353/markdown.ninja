@@ -17,3 +17,4 @@ The web server is written in Go, and the frontend uses React.
   - Add example pages to front page.
 
   - Allow custom domains
+  - Make more styles
