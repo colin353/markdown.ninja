@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/colin353/portfolio/config"
-	"github.com/colin353/portfolio/models"
+	"github.com/colin353/markdown.ninja/config"
+	"github.com/colin353/markdown.ninja/models"
 	"github.com/gorilla/sessions"
 )
 
