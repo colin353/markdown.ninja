@@ -115,3 +115,13 @@ input {
 .ace_editor {
   font-family: 'Fira Mono' !important;
 }
+
+@media screen and (max-width: 600px) {
+    .phone {
+        margin-left: -205px !important;
+    }
+}
+
+.phone {
+  margin-left: 10px;
+}
