@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/colin353/portfolio/models"
-	"github.com/colin353/portfolio/requesthandler"
+	"github.com/colin353/markdown.ninja/models"
+	"github.com/colin353/markdown.ninja/requesthandler"
 )
 
 // NewAuthenticationHandler creates an instance of the authentication

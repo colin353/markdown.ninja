@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/colin353/portfolio/config"
-	"github.com/colin353/portfolio/models"
-	"github.com/colin353/portfolio/requesthandler"
+	"github.com/colin353/markdown.ninja/config"
+	"github.com/colin353/markdown.ninja/models"
+	"github.com/colin353/markdown.ninja/requesthandler"
 	"github.com/gorilla/context"
 )
 
