@@ -12,7 +12,6 @@ machine:
 dependencies:
   cache_directories:
     - "app/node_modules"
-    - "~/kubernetes"
   override:
     # Install NPM requirements
     - cd app && npm install
