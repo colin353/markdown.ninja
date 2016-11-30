@@ -19,12 +19,12 @@ dependencies:
     - go get -t -d -v ./...
     - go install github.com/golang/lint/golint
     # Move to the $GOPATH directory.
-    - mkdir -p ~/.go_workspace/src/github.com/markdown.ninja
-    - cd ~/.go_workspace/src/github.com/markdown.ninja
+    - mkdir -p ~/.go_workspace/src/github.com/colin353/markdown.ninja
+    - cd ~/.go_workspace/src/github.com/colin353/markdown.ninja
     # Delete any old, cached version of the code, if it exists.
-    - rm -rf ~/.go_workspace/src/github.com/markdown.ninja/portfolio || true
+    - rm -rf ~/.go_workspace/src/github.com/colin353/markdown.ninja || true
     # Link the codebase in the go workspace, so it can be used for compilation.
-    - ln -s /home/ubuntu/portfolio /home/ubuntu/.go_workspace/src/github.com/markdown.ninja/portfolio
+    - ln -s /home/ubuntu/portfolio /home/ubuntu/.go_workspace/src/github.com/colin353/markdown.ninja
 test:
   override:
     # Build all the binaries.

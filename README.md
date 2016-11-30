@@ -1,6 +1,6 @@
 ## markdown.ninja
 
-![build-status](https://circleci.com/gh/colin353/markdown.ninja.png?circle-token=:circle-token)
+![build-status](https://circleci.com/gh/colin353/markdown.ninja.png?style=shield)
 
 This is a little project to make a service which helps people maintain
 a personal portfolio website, which shows off their personal projects.
