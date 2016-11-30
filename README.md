@@ -10,16 +10,12 @@ a personal portfolio website, which shows off their personal projects.
 The web server is written in Go, and the frontend uses React.
 
 ## To do list
-
+  - Make more styles
   - Set limits of how much space you can upload for one account
-
-  - Make a mobile-friendly version of the editor.
+  - Improve the front page
 
   - Write more jest tests that exercise the api.js functions
 
-  - Improve the front page
-
   - Allow custom domains
+  - Beef up the tutorial content.
   - Make more styles
-
-  - Make style preprocessor as a build step

@@ -55,7 +55,9 @@ const styles = {
   },
   content: {
     minHeight: 300,
-    paddingBottom: 50
+    paddingBottom: 50,
+    paddingLeft: 20,
+    paddingRight: 20
   },
   fullscreenContent: {
     flex: 1,

@@ -6,6 +6,7 @@
 */
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 var Icon = require('./icon');
@@ -25,24 +26,34 @@ type Props = {
   clickPage: (p: Page) => void,
   clickFile: (f: File) => void,
   onAddNewPage?: () => void,
-  onUploadFile?: () => void
+  onUploadFile?: () => void,
+  micro: boolean
 }
 
 class Tree extends React.Component {
   props: Props;
   state: {
-    domain: string
+    domain: string,
+    collapsed: boolean
   };
   constructor(props: Props) {
     super(props);
     this.state = {
-      domain: this.props.api.user?this.props.api.user.domain:''
+      domain: this.props.api.user?this.props.api.user.domain:'',
+      collapsed: true
     };
   }
 
   componentDidMount() {
     this.props.api.addListener("authenticationStateChanged", "tree", () => {
       this.setState({ domain: this.props.api.user.domain });
+    });
+
+    this.props.api.addListener('clickBody', 'tree', (e) => {
+      var area = ReactDOM.findDOMNode(this);
+      if (!area.contains(e.target)) {
+        if(!this.state.collapsed) this.setState({collapsed: true});
+      }
     });
   }
 
@@ -57,10 +68,6 @@ class Tree extends React.Component {
         // Add the current style to the page.
         CSS.load("/css/webstyles/" + props.style + ".css");
     }
-  }
-
-  handleClick() {
-
   }
 
   collect(page: Page) {
@@ -81,14 +88,16 @@ class Tree extends React.Component {
   }
 
   render() {
-    console.log(Styles);
+    if(this.props.micro && this.state.collapsed) {
+      return (<div onClick={() => this.setState({collapsed: false})} className="noselect" style={styles.collapsedContainer}><Icon style={styles.menuIcon} name="menu" /></div>);
+    }
     return (
-      <div style={styles.container}>
-        <div onClick={this.clickDomain.bind(this)} style={styles.rootRow}><Icon name="book" /> {this.state.domain}.{this.props.api.BASE_DOMAIN}</div>
+      <div style={this.props.micro?styles.microcontainer:styles.container}>
+        <div onClick={this.clickDomain.bind(this)} style={styles.rootRow}><Icon name="book" /> {Ellipsis(this.state.domain+"."+this.props.api.BASE_DOMAIN, 25)}</div>
         {this.props.pages.map((p) => {
           return (
             <ContextMenuTrigger collect={this.collect.bind(this, p)} key={p.name} id="page">
-              <div onClick={this.props.clickPage.bind(this, p)} className="noselect" style={styles.row}><Icon name="description" /> {p.name}</div>
+              <div onClick={this.props.clickPage.bind(this, p)} className="noselect" style={styles.row}><Icon name="description" /> {Ellipsis(p.name, 19)}</div>
             </ContextMenuTrigger>
           )
         })}
@@ -136,6 +145,27 @@ const styles = {
     display: 'flex',
     flexDirection: 'column'
   },
+  collapsedContainer: {
+    paddingTop: 5,
+    fontSize: 16,
+    color: '#c4c4c4',
+    backgroundColor: '#272822',
+    width: 50,
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  microcontainer: {
+    paddingTop: 5,
+    fontSize: 16,
+    color: '#c4c4c4',
+    backgroundColor: '#272822',
+    width: 300,
+    marginRight: -250,
+    zIndex: 5,
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
   select: {
     marginLeft: 20,
     fontSize: 16,
@@ -165,6 +195,10 @@ const styles = {
     display: 'flex',
     marginBottom: 10,
     justifyContent: 'center'
+  },
+  menuIcon: {
+    marginLeft: 13,
+    marginTop: 5
   }
 };
 
