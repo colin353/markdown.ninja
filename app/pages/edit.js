@@ -22,7 +22,8 @@ var ConvertAbsToRelativeURL = require('../tools/relative-to-absolute');
 import type { APIInstance } from '../api/api';
 
 type Props = {
-  api: APIInstance
+  api: APIInstance,
+  containerWidth: number
 };
 
 class Edit extends React.Component {

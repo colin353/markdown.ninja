@@ -12,7 +12,7 @@ var Icon = require('./icon');
 var Button = require('./button');
 var Ellipsis = require('../tools/overflow-ellipsis');
 var CSS = require('../tools/loadcss');
-var Styles = require('json-loader!../config/styles.json').styles;
+var Styles = require('../config/styles.json').styles;
 
 import type { APIInstance } from '../api/api';
 

@@ -1,6 +1,5 @@
 /*
   loadcss.js
-  @flow
 
   The purpose of this file is to allow dynamically loading and
   unloading a CSS file.
