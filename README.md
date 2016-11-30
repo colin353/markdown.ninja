@@ -1,5 +1,7 @@
 ## markdown.ninja
 
+![build-status](https://circleci.com/gh/colin353/markdown.ninja.png?circle-token=:circle-token)
+
 This is a little project to make a service which helps people maintain
 a personal portfolio website, which shows off their personal projects.
 
@@ -20,6 +22,4 @@ The web server is written in Go, and the frontend uses React.
   - Allow custom domains
   - Make more styles
 
-  - Rebrand to markdown.ninja
-  - When you click your domain name in the editor, open in new tab
   - Make style preprocessor as a build step
