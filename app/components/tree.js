@@ -181,15 +181,21 @@ const styles = {
     marginLeft: 60
   },
   rootRow: {
+    marginTop: 5,
+    marginBottom: 5,
     paddingLeft: 20,
     cursor: 'default'
   },
   row: {
     paddingLeft: 40,
-    cursor: 'default'
+    cursor: 'default',
+    marginTop: 5,
+    marginBottom: 5
   },
   indentRow: {
-    paddingLeft: 60
+    paddingLeft: 60,
+    marginTop: 5,
+    marginBottom: 5
   },
   controlPanel: {
     display: 'flex',
