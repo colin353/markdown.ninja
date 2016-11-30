@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/colin353/portfolio/models"
-	"github.com/colin353/portfolio/requesthandler"
+	"github.com/colin353/markdown.ninja/models"
+	"github.com/colin353/markdown.ninja/requesthandler"
 )
 
 // NewEditHandler returns an instance of the edit handler, with
