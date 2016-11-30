@@ -27,6 +27,6 @@ node_modules/.bin/webpack --optimize-minimize --bail --optimize-dedupe --progres
 # container.
 echo "--- Compile special go binary for docker environment ---"
 cd ..
-CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo .
+CGO_ENABLED=0 GOOS=linux go build -o server -a -installsuffix cgo .
 
 echo "--- Build complete. ---"

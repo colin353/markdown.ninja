@@ -2,7 +2,7 @@ FROM scratch
 MAINTAINER Colin Merkel <colinmerkel@podkarma.com>
 
 # Add the application binary.
-ADD portfolio /
+ADD server /
 
 # Add the supplementary files.
 ADD web /web
@@ -12,6 +12,6 @@ ADD config /config
 # we want to use local storage.
 ADD data /data
 
-CMD ["/portfolio"]
+CMD ["/server"]
 
 EXPOSE 8080
