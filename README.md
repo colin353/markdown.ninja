@@ -18,3 +18,4 @@ The web server is written in Go, and the frontend uses React.
 
   - Allow custom domains
   - Beef up the tutorial content.
+  - Make more styles
