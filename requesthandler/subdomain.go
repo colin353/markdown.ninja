@@ -123,14 +123,17 @@ func renderPage(domain string, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(fmt.Sprintf(`
+			<head>
+	    <meta name="viewport" content="width=550, user-scalable=0">
       <style>
         %s
         %s
       </style>
+			</head>
       <div class='md_container'>
         <div class='content'>%s</div>
       </div>
-    `, requiredStyle, defaultStyle, p.HTML)))
+    `, defaultStyle, requiredStyle, p.HTML)))
 }
 
 func renderFile(domain string, w http.ResponseWriter, r *http.Request) {

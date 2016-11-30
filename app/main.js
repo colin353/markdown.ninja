@@ -4,9 +4,10 @@
 */
 
 var ReactDOM = require('react-dom');
-var Routes   = require('./routes');
 
 window._reactRoot = document.getElementById('root');
+
+var Routes   = require('./routes');
 
 ReactDOM.render(
   Routes,

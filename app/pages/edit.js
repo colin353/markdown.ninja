@@ -18,6 +18,7 @@ var Preview = require('../components/preview');
 var Tab = require('../components/tab');
 var Popover = require('../components/popover');
 var ConvertAbsToRelativeURL = require('../tools/relative-to-absolute');
+var Icon = require('../components/icon');
 
 import type { APIInstance } from '../api/api';
 
@@ -303,8 +304,16 @@ class Edit extends React.Component {
     this.setState({showUploadPopover: true});
   }
 
+  // If smallDisplay() is true, we'll just display a single tab
+  // at once, instead of two tabs side by side.
   smallDisplay() {
     return this.props.containerWidth<1160;
+  }
+
+  // If microDisplay() is true, we'll hide the file tree when
+  // inactive.
+  microDisplay() {
+    return this.props.containerWidth<715;
   }
 
   setStyle(style: string) {
@@ -313,9 +322,11 @@ class Edit extends React.Component {
   }
 
   render() {
+    console.log(this.props.containerWidth);
     return (
       <div style={styles.container}>
         <Tree
+          micro={this.microDisplay()}
           setStyle={this.setStyle.bind(this)}
           style={this.state.style}
           api={this.props.api}
@@ -333,9 +344,11 @@ class Edit extends React.Component {
               <div style={{flex: 1, marginRight: -40}}></div>
             )}
             <Tab onClick={this.clickTab.bind(this, 'preview')} selected={this.state.showPreview} name="preview" />
-            {this.smallDisplay()?[]:(
-              <div style={{flex: 1}}></div>
-            )}
+            <div style={{flex: 1}}>
+              {this.state.unsavedChanges?(
+                <div onClick={this.save.bind(this)} className="noselect" style={{float: 'right', color: '#E0E0E0', marginRight: 10, marginTop: -1}}><Icon name="save" /></div>
+              ):[]}
+            </div>
           </div>
           {this.smallDisplay()?(
             <div style={styles.window}>

@@ -25,7 +25,8 @@ const styles = {
     justifyContent: 'center'
   },
   footer: {
-    fontSize: 12
+    fontSize: 12,
+    textAlign: 'center'
   }
 }
 
