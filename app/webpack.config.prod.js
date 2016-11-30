@@ -19,6 +19,12 @@ module.exports = {
           query: {
             presets: ['es2015', 'react', 'stage-2']
           }
+        },
+        {
+          test: /\.json$/,
+          include: __dirname + "/",
+          exclude: /node_modules/,
+          loader: "json-loader"
         }
     ]
   },
