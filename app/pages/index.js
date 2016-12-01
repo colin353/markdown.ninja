@@ -99,6 +99,7 @@ const styles = {
   },
   addressBar: {
     padding: 10,
+    paddingTop: 5,
     fontSize: 12
   },
   browser: {
@@ -114,7 +115,7 @@ const styles = {
     justifyContent: 'center'
   },
   phone: {
-    width: 175,
+    width: 165,
     marginLeft: 'auto',
     marginRight: 'auto',
     paddingLeft: 4,

@@ -67,7 +67,7 @@ const styles = {
     border: '2px solid #222',
   },
   editor: {
-    fontSize: 16,
+    fontSize: 14,
     width: '100%',
     height: '100%',
     position:'absolute'
