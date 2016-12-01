@@ -19,6 +19,7 @@ var Tab = require('../components/tab');
 var Popover = require('../components/popover');
 var ConvertAbsToRelativeURL = require('../tools/relative-to-absolute');
 var Icon = require('../components/icon');
+var Progress = require('../components/progress');
 
 import type { APIInstance } from '../api/api';
 
@@ -46,7 +47,9 @@ class Edit extends React.Component {
     showDeletePagePopover: boolean,
     showDeleteFilePopover: boolean,
     showUploadPopover: boolean,
-    style: string
+    style: string,
+    uploadProgress: number,
+    uploadError: string
   };
   renameInput: any;
   fileInput: any;
@@ -76,7 +79,9 @@ class Edit extends React.Component {
       showDeleteFilePopover: false,
       showUploadPopover: false,
       renameType: 'page',
-      style: 'default'
+      style: 'default',
+      uploadProgress: 0,
+      uploadError: ""
     }
 
     this.converter = new Showdown.Converter();
@@ -291,8 +296,17 @@ class Edit extends React.Component {
     });
   }
 
+  uploadProgress(progress: number) {
+    this.setState({uploadProgress: progress});
+  }
+
   uploadFile() {
-    this.props.api.uploadFile("file.txt", this.fileInput.files[0], () => {}).then(() => {
+    this.props.api.uploadFile("file.txt", this.fileInput.files[0], this.uploadProgress.bind(this)).then((response) => {
+      if(response.error) {
+        if(response.result == 'file too big') this.setState({uploadError: 'That file is too big! You can only upload files smaller than 50 MiB.'});
+        if(response.result == 'insufficient space') this.setState({uploadError: 'You\'ve used up too much hard drive space. Delete some files before uploading another.'});
+        throw 'upload error';
+      }
       return this.getFiles();
     }).then((files) => {
       this.setState({files, showUploadPopover: false});
@@ -321,7 +335,6 @@ class Edit extends React.Component {
   }
 
   render() {
-    console.log(this.props.containerWidth);
     return (
       <div style={styles.container}>
         <Tree
@@ -415,6 +428,7 @@ class Edit extends React.Component {
         </Popover>
 
         <Popover
+          height={155}
           api={this.props.api}
           visible={this.state.showUploadPopover}
           onDismiss={() => this.setState({showUploadPopover: false})}
@@ -424,6 +438,11 @@ class Edit extends React.Component {
             <input ref={(r) => this.fileInput = r} style={{flex: 1}} type="file" />
             <Button onClick={this.uploadFile.bind(this)} color="red" action="upload" />
           </div>
+          {this.state.uploadError==""?(
+            <Progress progress={this.state.uploadProgress} />
+          ):(
+            <p>{this.state.uploadError}</p>
+          )}
         </Popover>
       </div>
     );

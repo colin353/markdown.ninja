@@ -8,6 +8,7 @@ import (
 	"github.com/colin353/markdown.ninja/models"
 	"github.com/colin353/markdown.ninja/requesthandler"
 	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 )
 
 // AppConfig contains the application configuration, which is loaded
@@ -27,6 +28,9 @@ func main() {
 	if AppConfig.Mode == "test" || AppConfig.Mode == "testing" {
 		models.ClearDatabase()
 	}
+
+	// Set up the cookie store.
+	requesthandler.SessionStore = sessions.NewCookieStore([]byte(AppConfig.CookieSecret))
 
 	// Set up routing.
 	http.HandleFunc("/api/auth/", requesthandler.CreateHandler(NewAuthenticationHandler()))

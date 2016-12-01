@@ -15,6 +15,9 @@ import (
 // AppConfig is an instance of the application config.
 var AppConfig *config.Config
 
+// SessionStore saves cookie data securely.
+var SessionStore *sessions.CookieStore
+
 // A SimpleResponse is just an acknowledgement response
 // which reports if an error occurred or not.
 type SimpleResponse struct {
@@ -25,13 +28,12 @@ type SimpleResponse struct {
 // These are the response types that should be returned by the
 // Responders. They're just JSON strings.
 var (
-	ResponseOK          = SimpleResponse{"ok", false}
-	ResponseError       = SimpleResponse{"error", true}
-	ResponseInvalidArgs = SimpleResponse{"invalid arguments", true}
+	ResponseOK                = SimpleResponse{"ok", false}
+	ResponseError             = SimpleResponse{"error", true}
+	ResponseInvalidArgs       = SimpleResponse{"invalid arguments", true}
+	ResponseInssuficientSpace = SimpleResponse{"insufficient space", true}
+	ResponseFileTooBig        = SimpleResponse{"file too big", true}
 )
-
-// SessionStore saves cookie data securely.
-var SessionStore = sessions.NewCookieStore([]byte("123t22est"))
 
 // A Responder is a function which can respond directly to an HTTP
 // request.

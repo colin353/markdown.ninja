@@ -93,6 +93,7 @@ class Tree extends React.Component {
     }
     return (
       <div style={this.props.micro?styles.microcontainer:styles.container}>
+        <div style={{flex: 1, overflow: 'auto'}}>
         <div onClick={this.clickDomain.bind(this)} style={styles.rootRow}><Icon name="book" /> {Ellipsis(this.state.domain+"."+this.props.api.BASE_DOMAIN, 25)}</div>
         {this.props.pages.map((p) => {
           return (
@@ -125,6 +126,7 @@ class Tree extends React.Component {
       </div>
 
       <div style={{flex: 1}}></div>
+      </div>
       <div style={styles.controlPanel}>
         <Button onClick={this.props.onAddNewPage} action="+ new page" />
         <div style={{marginLeft: 10}}></div>
