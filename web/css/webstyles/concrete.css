@@ -8,6 +8,8 @@
   font-size: 1em;
   color: #333;
   background-color: #FAFAFA;
+  background-image: url("http://markdown.ninja/img/bg/concrete.png");
+  background-repeat: repeat;
 }
 
 .md_container h1, .md_container h2, .md_container h3, .md_container h4 {
@@ -24,9 +26,13 @@
 
 .md_container .content {
   max-width: 700px;
+  background-color:#FAFAFA;
   display: block;
   margin-left: auto;
   margin-right: auto;
   padding-left: 20px;
+  box-shadow: 1px 1px 5px #AAA;
   padding-right: 20px;
+  padding-top:20px;
+  padding-bottom:40px;
 }

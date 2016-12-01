@@ -12,6 +12,14 @@
   background-color: #fff;
 }
 
+.md_container a {
+  color: #268bd2;
+  border-bottom: 1px solid #DEDEDE;
+  line-height: 1.4;
+  text-decoration: none;
+  font-weight:500;
+}
+
 .md_container .content {
   max-width: 700px;
   display: block;
