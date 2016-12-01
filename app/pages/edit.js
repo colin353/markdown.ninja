@@ -103,7 +103,6 @@ class Edit extends React.Component {
     })
 
     this.props.api.addListener("windowUnload", "editor", () => {
-      debugger;
       if(this.state.unsavedChanges) return "You have unsaved changes. Are you sure you want to leave?";
       else return undefined;
     });
@@ -436,7 +435,11 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     flex: 1,
-    height: '100%'
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0
   },
   editWindow: {
     display: 'flex',
