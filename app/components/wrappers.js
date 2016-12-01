@@ -61,7 +61,8 @@ const styles = {
   },
   fullscreenContent: {
     flex: 1,
-    display: 'flex'
+    display: 'flex',
+    position: 'relative'
   }
 };
 
