@@ -1,17 +1,18 @@
+/*
+  ycombinator.css
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat|Open+Sans');
+  A theme loosely based on YC's typical style of website.
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400,500');
 
 .md_container {
   padding-top: 20px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-weight: 300;
   font-size: 1em;
   color: #333;
-  background-color: #FAFAFA;
-}
-
-.md_container h1, .md_container h2, .md_container h3, .md_container h4 {
-  font-family: 'Montserrat';
+  background-color: #f6f6ef;
 }
 
 .md_container a {
@@ -20,6 +21,10 @@
   line-height: 1.4;
   text-decoration: none;
   font-weight:500;
+}
+
+.md_container h1, .md_container h2, .md_container h3, .md_container h4 {
+  font-weight: 400;
 }
 
 .md_container .content {

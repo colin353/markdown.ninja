@@ -14,7 +14,10 @@ type Props = {
 class Preview extends React.Component {
   render() {
     return (
-      <div className="md_container" style={styles.container} dangerouslySetInnerHTML={{ __html: this.props.html}}></div>
+      <div className="md_container" style={styles.container}>
+        <div className="content" dangerouslySetInnerHTML={{ __html: this.props.html}}>
+        </div>
+      </div>
     );
   }
 }

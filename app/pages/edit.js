@@ -108,7 +108,6 @@ class Edit extends React.Component {
     })
 
     this.props.api.addListener("windowUnload", "editor", () => {
-      debugger;
       if(this.state.unsavedChanges) return "You have unsaved changes. Are you sure you want to leave?";
       else return undefined;
     });
