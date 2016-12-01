@@ -35,3 +35,9 @@ redisurl: localhost:6379
 # to the executable, or an absolute path. It is where
 # files will be stored/accessed.
 datadirectory: ./data
+
+# Cookie secret. This is a sort of encryption key for
+# cookies. Make sure you don't just rely on the default
+# value here, specify your own under your own config.yaml
+# or environment variable.
+cookiesecret: please-replace-with-your-own

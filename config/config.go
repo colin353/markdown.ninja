@@ -27,6 +27,7 @@ type Config struct {
 	RedisURL      string
 	DataDirectory string
 	Hostnames     []string
+	CookieSecret  string
 }
 
 // LoadConfig generates the configuration using three rules:

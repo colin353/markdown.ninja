@@ -22,6 +22,7 @@ type User struct {
 	Bio          string `json:"bio"`
 	Domain       string `json:"domain"`
 	Style        string `json:"style"`
+	SpaceUsage   int    `json:"space_usage"`
 }
 
 // Export converts a user into fields which are "safe" to export to
@@ -33,6 +34,7 @@ func (u *User) Export() map[string]interface{} {
 		"phone_number": u.PhoneNumber,
 		"domain":       u.Domain,
 		"style":        u.Style,
+		"space_usage":  u.SpaceUsage,
 	}
 }
 

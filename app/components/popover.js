@@ -15,7 +15,8 @@ type Props = {
   visible: boolean,
   onDismiss: Function,
   onFocus: Function,
-  children?: Array<React.Component<any,any,any>>
+  children?: Array<React.Component<any,any,any>>,
+  height: number
 }
 
 class Popover extends React.Component {
@@ -37,7 +38,7 @@ class Popover extends React.Component {
   }
   render() {
     var shade = Object.assign({}, styles.shade, this.props.visible?{display: 'block'}:{});
-    var popover = Object.assign({}, styles.popover, this.props.visible?{display: 'block'}:{});
+    var popover = Object.assign({}, {height: this.props.height}, styles.popover, this.props.visible?{display: 'block'}:{});
     return (
       <div>
         <div onClick={this.props.onDismiss} style={shade}></div>
@@ -49,7 +50,8 @@ class Popover extends React.Component {
 Popover.defaultProps = {
   visible: false,
   onDismiss: () => {},
-  onFocus: () => {}
+  onFocus: () => {},
+  height: 100
 }
 
 const styles = {
@@ -69,7 +71,6 @@ const styles = {
     padding: 20,
     backgroundColor: '#E0E0E0',
     width: 400,
-    height: 100,
     position: 'absolute',
     zIndex: 25,
     top: '20%',

@@ -26,6 +26,8 @@ spec:
               value: markdown.ninja
             - name: APPCONFIG_DATADIRECTORY
               value: /mnt/data
+            - name: APPCONFIG_COOKIESECRET
+              value: ${COOKIE_SECRET}
           ports:
             - name: portfolio
               containerPort: 80

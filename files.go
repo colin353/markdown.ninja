@@ -75,9 +75,16 @@ func upload(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 	}
 	defer file.Close()
 
-	if size > (10 << 20) {
+	if size > (50 << 20) {
 		log.Printf("You can't upload such a big file (%d bytes) to the server. It's not allowed.", size)
-		return requesthandler.ResponseError
+		return requesthandler.ResponseFileTooBig
+	}
+
+	// We need to check if the user has enough space remaining to upload
+	// the file. We allow 100 MiB of space.
+	if int64(u.SpaceUsage)+size > (100 << 20) {
+		log.Printf("Unable to upload file because we reached the space limit.")
+		return requesthandler.ResponseInssuficientSpace
 	}
 
 	if err != nil {
@@ -101,11 +108,14 @@ func upload(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 		// and the actual file.
 		os.Remove(f.GetPath())
 		models.Delete(&f)
+
+		// Release the space from the deleted file so the user can
+		// upload more stuff.
+		u.SpaceUsage -= f.Size
+		models.Save(u)
 	}
 
 	f.Size = int(size)
-
-	log.Printf("Uploaded file: size = %v bytes", f.Size)
 
 	// Now we need to compute the file hash using MD5.
 	data, err := ioutil.ReadAll(file)
@@ -146,6 +156,10 @@ func upload(u *models.User, w http.ResponseWriter, r *http.Request) interface{} 
 		log.Printf("Unable to create a record of the upload in the database.")
 		return requesthandler.ResponseError
 	}
+
+	// Now we'll update the user's file space usage.
+	u.SpaceUsage += f.Size
+	models.Save(u)
 
 	return requesthandler.ResponseOK
 }
@@ -221,6 +235,10 @@ func deleteFile(u *models.User, w http.ResponseWriter, r *http.Request) interfac
 		http.Error(w, "", http.StatusInternalServerError)
 		return requesthandler.ResponseError
 	}
+
+	// Release the space so the user can upload another file later.
+	u.SpaceUsage -= f.Size
+	models.Save(u)
 
 	return requesthandler.ResponseOK
 }
