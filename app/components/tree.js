@@ -140,16 +140,16 @@ class Tree extends React.Component {
 const styles = {
   container: {
     paddingTop: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: '#c4c4c4',
     backgroundColor: '#272822',
-    width: 300,
+    width: 270,
     display: 'flex',
     flexDirection: 'column'
   },
   collapsedContainer: {
     paddingTop: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: '#c4c4c4',
     backgroundColor: '#272822',
     width: 50,
@@ -158,11 +158,11 @@ const styles = {
   },
   microcontainer: {
     paddingTop: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: '#c4c4c4',
     backgroundColor: '#272822',
-    width: 300,
-    marginRight: -250,
+    width: 270,
+    marginRight: -220,
     zIndex: 5,
     height: '100%',
     display: 'flex',
@@ -185,17 +185,17 @@ const styles = {
   rootRow: {
     marginTop: 5,
     marginBottom: 5,
-    paddingLeft: 20,
+    paddingLeft: 10,
     cursor: 'default'
   },
   row: {
-    paddingLeft: 40,
+    paddingLeft: 30,
     cursor: 'default',
     marginTop: 5,
     marginBottom: 5
   },
   indentRow: {
-    paddingLeft: 60,
+    paddingLeft: 50,
     marginTop: 5,
     marginBottom: 5
   },

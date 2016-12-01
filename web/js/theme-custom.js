@@ -13,7 +13,7 @@ background: #555651\
 .ace-monokai {\
 background-color: #49483E;\
 color: #F8F8F2;\
-font-size: 16px;\
+font-size: 14px;\
 }\
 .ace-monokai .ace_cursor {\
 color: #F8F8F0\
