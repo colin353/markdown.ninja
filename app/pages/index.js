@@ -58,8 +58,44 @@ class Index extends React.Component {
         <div style={styles.buttonRow}>
           <Button size="big" onClick={this.clickSignup.bind(this)} color="red" action="sign up free" />
         </div>
-
         <p style={styles.cred}>Thanks for <a style={{color: '#888'}} href="http://www.freepik.com/">Freepik</a> from <a style={{color: '#888'}} href="http://www.flaticon.com">Flatiron</a> for the icon.</p>
+
+        <h1>Check out some examples</h1>
+        <p>
+          You can also type HTML elements directly into markdown, so you can make your site
+          look pretty much however you want.
+        </p>
+        <br />
+
+        <div style={styles.computerExample}>
+          <div style={styles.addressBar}><Icon style={{fontSize: 16}} name="keyboard_backspace" /> <Icon style={{fontSize: 16}} name="close" /> <span style={{marginLeft: 10}}>http://colin.markdown.ninja/</span></div>
+          <div style={styles.browserImage}>
+            <img width={500} src="/img/example0.png" />
+          </div>
+        </div>
+
+        <div style={styles.computerExample}>
+          <div style={styles.addressBar}><Icon style={{fontSize: 16}} name="keyboard_backspace" /> <Icon style={{fontSize: 16}} name="close" /> <span style={{marginLeft: 10}}>http://jsmith.markdown.ninja/</span></div>
+          <div style={styles.browserImage}>
+            <img width={500} src="/img/example1.png" />
+          </div>
+        </div>
+
+        <h1>Support this site</h1>
+
+        <p>
+          This website is 100% free for anyone to use. But it costs money to host the service.
+        </p>
+
+        <p>
+          If you've benefitted from the service, <a href="https://www.paypal.me/markdownninja">consider
+          donating to keep the service running</a>.
+        </p>
+
+        <p>
+          If enough donations are received, I'll
+          also buy a wildcard SSL certificate, so that all of the subdomains can support SSL.
+        </p>
 
       </div>
     );
@@ -97,6 +133,17 @@ const styles = {
     minWidth: 350,
     marginRight: 'auto'
   },
+  computerExample: {
+    display: 'block',
+    width: 500,
+    backgroundColor: '#F0F0F0',
+    border: '2px solid #333',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: 40
+  },
   addressBar: {
     padding: 10,
     paddingTop: 5,
@@ -108,6 +155,10 @@ const styles = {
     padding: 10,
     paddingLeft: 20,
     paddingRight: 20
+  },
+  browserImage: {
+    borderTop: '2px solid #333',
+    backgroundColor: 'white'
   },
   buttonRow: {
     display: 'flex',
