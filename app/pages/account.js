@@ -23,6 +23,8 @@ class AccountPage extends React.Component {
     email: string,
     password: string,
     password2: string,
+    passwordError: string,
+    passwordSuccess: string,
     emailError: string,
     emailSuccess: string,
     customDomain: string,
