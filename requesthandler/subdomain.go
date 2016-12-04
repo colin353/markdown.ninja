@@ -99,9 +99,28 @@ func renderPage(domain string, w http.ResponseWriter, r *http.Request) {
 
 	err := models.Load(&p)
 	if err != nil {
-		log.Printf("Didn't find anything at key: `%v`", p.Key())
-		http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
-		return
+		// Okay, it didn't exist as a subdomain. But it might exist as
+		// an external domain. Let's check there first.
+
+		log.Printf("Fallback: searching for external domain: %s", domain)
+
+		d := models.Domain{}
+		d.ExternalDomain = domain
+		err = models.Load(&d)
+		if err != nil {
+			log.Printf("Didn't find anything at key: `%v`", p.Key())
+			http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
+			return
+		}
+
+		p.Domain = d.InternalDomain
+		domain = d.InternalDomain
+		err = models.Load(&p)
+		if err != nil {
+			log.Printf("Didn't find anything at key: `%v`", p.Key())
+			http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
+			return
+		}
 	}
 
 	user := models.User{}
@@ -143,9 +162,25 @@ func renderFile(domain string, w http.ResponseWriter, r *http.Request) {
 	err := models.Load(&f)
 
 	if err != nil {
-		log.Printf("Didn't find anything at key: `%v`", f.Key())
-		http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
-		return
+
+		d := models.Domain{}
+		d.ExternalDomain = domain
+		err = models.Load(&d)
+		if err != nil {
+			log.Printf("Didn't find anything at key: `%v`", f.Key())
+			http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
+			return
+		}
+
+		f.Domain = d.InternalDomain
+		domain = d.InternalDomain
+
+		err = models.Load(&f)
+		if err != nil {
+			log.Printf("Didn't find anything at key: `%v`", f.Key())
+			http.Error(w, "404: that thing doesn't exist!", http.StatusNotFound)
+			return
+		}
 	}
 
 	http.ServeFile(w, r, f.GetPath())

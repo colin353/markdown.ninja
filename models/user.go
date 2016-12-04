@@ -14,27 +14,29 @@ import (
 // domain name, etc. The subdomain name is the unique key for finding
 // the user.
 type User struct {
-	Name         string `json:"name"`
-	PasswordHash string `json:"password_hash"`
-	PasswordSalt string `json:"password_salt"`
-	Email        string `json:"email"`
-	PhoneNumber  string `json:"phone_number"`
-	Bio          string `json:"bio"`
-	Domain       string `json:"domain"`
-	Style        string `json:"style"`
-	SpaceUsage   int    `json:"space_usage"`
+	Name           string `json:"name"`
+	PasswordHash   string `json:"password_hash"`
+	PasswordSalt   string `json:"password_salt"`
+	Email          string `json:"email"`
+	PhoneNumber    string `json:"phone_number"`
+	Bio            string `json:"bio"`
+	Domain         string `json:"domain"`
+	ExternalDomain string `json:"external_domain"`
+	Style          string `json:"style"`
+	SpaceUsage     int    `json:"space_usage"`
 }
 
 // Export converts a user into fields which are "safe" to export to
 // the web (i.e. excluding sensitive fields like password hashes).
 func (u *User) Export() map[string]interface{} {
 	return map[string]interface{}{
-		"name":         u.Name,
-		"email":        u.Email,
-		"phone_number": u.PhoneNumber,
-		"domain":       u.Domain,
-		"style":        u.Style,
-		"space_usage":  u.SpaceUsage,
+		"name":            u.Name,
+		"email":           u.Email,
+		"phone_number":    u.PhoneNumber,
+		"domain":          u.Domain,
+		"style":           u.Style,
+		"space_usage":     u.SpaceUsage,
+		"external_domain": u.ExternalDomain,
 	}
 }
 
@@ -109,6 +111,11 @@ func (u *User) Validate() bool {
 	// Check that the domain name is valid.
 	if !domainValidator.MatchString(u.Domain) {
 		log.Printf("Validation failed on user %s, illegal domain '%s'\n", u.Name, u.Domain)
+		return false
+	}
+
+	if !externalDomainValidator.MatchString(u.ExternalDomain) {
+		log.Printf("Validation failed on user %s, illegal external domain '%s'\n", u.Name, u.ExternalDomain)
 		return false
 	}
 

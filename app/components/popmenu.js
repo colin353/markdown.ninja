@@ -45,6 +45,10 @@ class PopMenu extends React.Component {
     });
   }
 
+  clickMyAccount() {
+    this.context.router.push('/edit/account');
+  }
+
   clickEditSite() {
     this.context.router.push('/edit/site');
   }
@@ -63,8 +67,13 @@ class PopMenu extends React.Component {
           <span style={styles.subdomain}>{this.state.domain}</span>
           <span>{"." + this.props.api.BASE_DOMAIN}</span>
         </div>
+
+        <div style={{margin: 10}}>
+          <Button size="wide" color='blue' onClick={this.clickEditSite.bind(this)} action="edit my site" />
+        </div>
+
         <div style={styles.buttonlist}>
-          <Button color='red' onClick={this.clickEditSite.bind(this)} action="edit my site" />
+          <Button color='red' onClick={this.clickMyAccount.bind(this)} action="my account" />
           <div style={{display: 'flex', flex: 1}}></div>
           <Button onClick={this.logout.bind(this)} action="log out" />
         </div>

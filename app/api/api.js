@@ -257,9 +257,23 @@ class API {
   }
 
   deleteFile(name: string) {
-    return this.request("/api/files/delete", {name: name})
+    return this.request("/api/files/delete", {name});
   }
 
+  updateEmail(email: string) {
+    return this.request("/api/account/update_email", {email});
+  }
+
+  updatePassword(password: string) {
+    return this.request("/api/account/update_password", {password});
+  }
+
+  updateCustomDomain(domain: string) {
+    return this.request("/api/account/update_custom_domain", {domain}).then((r) => {
+      if(!r.error) this.user.external_domain = domain;
+      return r;
+    });
+  }
 }
 
 type APIInstance = API;

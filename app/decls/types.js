@@ -18,5 +18,6 @@ declare type File = {
 type User = {
   name: string,
   domain: string,
+  external_domain: string,
   email: string
 }

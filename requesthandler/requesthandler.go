@@ -33,6 +33,7 @@ var (
 	ResponseInvalidArgs       = SimpleResponse{"invalid arguments", true}
 	ResponseInssuficientSpace = SimpleResponse{"insufficient space", true}
 	ResponseFileTooBig        = SimpleResponse{"file too big", true}
+	ResponseDuplicate         = SimpleResponse{"duplicate", true}
 )
 
 // A Responder is a function which can respond directly to an HTTP

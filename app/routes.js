@@ -41,6 +41,7 @@ var routes = (
       <IndexRoute component={require('./pages/index')} />
       <Route path='/edit/login' component={require('./pages/login')} />
       <Route path='/edit/signup' component={require('./pages/signup')} />
+      <Route path='/edit/account' component={require('./pages/account')} />
       <Route path="*" component={require('./pages/404')}/>
     </Route>
   </Router>

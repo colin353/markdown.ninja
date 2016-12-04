@@ -10,7 +10,7 @@ var React = require('react');
 type Props = {
   action: string,
   color: 'red' | 'blue',
-  size: 'big' | 'small',
+  size: 'big' | 'small' | 'wide',
   onClick: Function
 };
 
@@ -19,7 +19,7 @@ class Button extends React.Component {
   static defaultProps: Props;
 
   render() {
-    var buttonstyle = Object.assign({}, this.props.size=="big"?styles.bigContainer:styles.container);
+    var buttonstyle = Object.assign({}, types[this.props.size]);
     buttonstyle.backgroundColor = colors[this.props.color];
 
     return (
@@ -34,6 +34,7 @@ Button.propTypes = {
   action: React.PropTypes.string.isRequired,
   onClick: React.PropTypes.func
 };
+
 Button.defaultProps = {
   action: '',
   color: 'blue',
@@ -48,6 +49,7 @@ const colors = {
 
 const styles = {
   container: {
+    textAlign: 'center',
     display: 'inline-block',
     backgroundColor: '#7A89C2',
     paddingLeft: 10,
@@ -57,6 +59,7 @@ const styles = {
     borderRadius: 2
   },
   bigContainer: {
+    textAlign: 'center',
     display: 'inline-block',
     backgroundColor: '#7A89C2',
     paddingLeft: 20,
@@ -66,9 +69,25 @@ const styles = {
     fontSize: 18,
     borderRadius: 2
   },
+  wideContainer: {
+    textAlign: 'center',
+    display: 'block',
+    backgroundColor: '#7A89C2',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    borderRadius: 2
+  },
   text: {
     color: '#E0E0E0'
   }
+}
+
+const types = {
+  big: styles.bigContainer,
+  small: styles.container,
+  wide: styles.wideContainer
 }
 
 module.exports = Button;

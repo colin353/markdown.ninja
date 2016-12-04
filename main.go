@@ -36,6 +36,7 @@ func main() {
 	http.HandleFunc("/api/auth/", requesthandler.CreateHandler(NewAuthenticationHandler()))
 	http.HandleFunc("/api/edit/", requesthandler.CreateAuthenticatedHandler(NewEditHandler()))
 	http.HandleFunc("/api/files/", requesthandler.CreateAuthenticatedHandler(NewFileHandler()))
+	http.HandleFunc("/api/account/", requesthandler.CreateAuthenticatedHandler(NewAccountHandler()))
 	http.HandleFunc("/edit/", requesthandler.ReactHandler)
 	http.HandleFunc("/favicon.ico", http.FileServer(http.Dir("./web")).ServeHTTP)
 
